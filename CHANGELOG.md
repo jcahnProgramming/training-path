@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+- Window lists every skill with the player's level and total XP (Player.GetLevelUncapped / GetXPUncapped).
+- New src/skills.lua: skill list, read helper, number formatting.
+- Refreshes once per game tick (Event.ServerLogic); only changed lines are rewritten.
+
 ## 0.1.3
 
 - Window now built with PrettyUI (required dependency, mod.io ID 6398181), the UI library used by Quest Helper and other approved plugins.
