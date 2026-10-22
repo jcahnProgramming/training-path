@@ -189,5 +189,77 @@ for _, file in ipairs({ "src/regions_cities.lua", "src/regions_dungeons.lua" }) 
 end
 print(string.format("regions: %d", regionCount))
 
+----------------------------------------------------------------------------
+-- Gear (src/gear/<skill>.lua, docs/gear-format.md)
+----------------------------------------------------------------------------
+local SLOTS = {}
+for _, slot in ipairs({ "Weapon", "Off-hand", "Two-handed", "Head", "Body", "Legs", "Hands", "Feet",
+    "Cape", "Neck", "Ring", "Ammo", "Pocket", "Aura", "Outfit", "Tool", "Familiar", "Potion", "Other" }) do
+    SLOTS[slot] = true
+end
+
+local function checkItemSpec(item, where)
+    if type(item.label) ~= "string" then problem(where, "item without label") end
+    if item.names == nil and item.contains == nil then problem(where, tostring(item.label) .. ": no names/contains") end
+    for _, part in ipairs(item.contains or {}) do
+        if part ~= part:lower() then problem(where, "contains must be lowercase: " .. part) end
+        if #part < 4 then problem(where, "contains too short to be safe: " .. part) end
+    end
+    for _, levelReq in ipairs(item.levels or {}) do
+        if not isSkill[levelReq.skill] then problem(where, "unknown skill " .. tostring(levelReq.skill)) end
+    end
+end
+
+local gearFiles, gearItems = 0, 0
+for _, skill in ipairs(SKILLS) do
+    local path = "src/gear/" .. skill:lower() .. ".lua"
+    local chunk, err = loadfile(path)
+    if chunk then
+        gearFiles = gearFiles + 1
+        local ok, gear = pcall(chunk)
+        local guideChunk = loadfile("src/guides/" .. skill:lower() .. ".lua")
+        local guide = guideChunk and guideChunk() or {}
+        if not ok or type(gear) ~= "table" then
+            problem(path, "didn't return a table: " .. tostring(gear))
+        else
+            checkAscii(gear, "gear " .. skill)
+            local function noLessThan(value, where)
+                if type(value) == "string" and value:find("<", 1, true) then problem(where, "contains '<'") end
+                if type(value) == "table" then for k, v in pairs(value) do noLessThan(v, where .. "." .. tostring(k)) end end
+            end
+            noLessThan(gear, "gear " .. skill)
+            if gear.skill ~= skill then problem(path, "skill field is " .. tostring(gear.skill)) end
+            local expectFrom = 1
+            for b, band in ipairs(gear.bands or {}) do
+                local where = "gear " .. skill .. " band " .. b
+                if band.from ~= expectFrom then problem(where, "starts at " .. tostring(band.from) .. ", expected " .. expectFrom) end
+                expectFrom = band.to
+                if type(band.items) ~= "table" or #band.items == 0 then problem(where, "no items") end
+                for i, item in ipairs(band.items or {}) do
+                    local iwhere = where .. " item " .. i
+                    gearItems = gearItems + 1
+                    checkItemSpec(item, iwhere)
+                    if not SLOTS[item.slot] then problem(iwhere, "unknown slot " .. tostring(item.slot)) end
+                    if type(item.tradeable) ~= "boolean" then problem(iwhere, "tradeable must be true/false") end
+                    if type(item.obtain) ~= "string" then problem(iwhere, "missing obtain") end
+                    if type(item.wiki) ~= "string" or not item.wiki:match("^https://runescape%.wiki/") then
+                        problem(iwhere, "wiki must be a https://runescape.wiki/ link")
+                    end
+                end
+            end
+            if guide.maxLevel and expectFrom ~= guide.maxLevel + 1 then
+                problem("gear " .. skill, "bands end at " .. tostring(expectFrom) .. ", guide maxLevel + 1 = " .. (guide.maxLevel + 1))
+            end
+            for methodId, inventory in pairs(gear.inventories or {}) do
+                local where = "gear " .. skill .. " inventory " .. methodId
+                if not seenIds[methodId] then problem(where, "no such method id") end
+                for _, item in ipairs(inventory.wear or {}) do checkItemSpec(item, where) end
+                for _, item in ipairs(inventory.carry or {}) do checkItemSpec(item, where) end
+            end
+        end
+    end
+end
+print(string.format("gear: %d skills, %d items", gearFiles, gearItems))
+
 print(string.format("%d methods checked, %d problems", totalMethods, problems))
 os.exit(problems == 0 and 0 or 1)

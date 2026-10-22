@@ -28,6 +28,7 @@ local Checks = require("src/checks")
 local Favourites = require("src/favourites")
 local Travel = require("src/travel")
 local Compass = require("src/compass")
+local Gear = require("src/gear/index")
 
 local Pages = {}
 
@@ -250,6 +251,26 @@ function Pages.redraw()
     show(true)
 end
 
+-- The Training | Gear buttons at the top of a skill's guide. Switching
+-- between them replaces the page instead of adding a Back step.
+local function addSkillSubTabs(skillName, active)
+    local training = view:AddSimpleButton("Training", function()
+        current = { name = "guide", arg = skillName }
+        show(false)
+    end)
+    local gear = view:AddSimpleButton("Gear", function()
+        current = { name = "gear", arg = skillName }
+        show(false)
+    end, { inline = true, disabled = Gear.bySkill[skillName] == nil })
+    if active == "guide" then training:SetActive(true) else gear:SetActive(true) end
+end
+
+-- A list of items (wear/carry), each checked green/red against what the
+-- player is carrying or wearing.
+local function addItemChecks(items, carried)
+    for _, item in ipairs(items or {}) do addCheckLine(Checks.item(item, carried)) end
+end
+
 ----------------------------------------------------------------------------
 -- Skills tab
 ----------------------------------------------------------------------------
@@ -350,6 +371,7 @@ PAGES.guide = {
     build = function(skillName, keepScroll)
         local guide = Guides.bySkill[skillName]
         addBackRow("Skills > " .. skillName)
+        addSkillSubTabs(skillName, "guide")
         view:AddTitle(skillName .. " guide")
         if guide == nil then
             view:AddText("This guide isn't available yet.")
@@ -403,6 +425,69 @@ PAGES.guide = {
             for _, method in ipairs(band.methods) do
                 parts[#parts + 1] = methodStatusLine(method, carried).text
             end
+        end
+        return table.concat(parts, "|")
+    end,
+}
+
+----------------------------------------------------------------------------
+-- Gear page (arg = skill name): gear by level, and how to get it
+----------------------------------------------------------------------------
+
+PAGES.gear = {
+    build = function(skillName, keepScroll)
+        local gear = Gear.bySkill[skillName]
+        addBackRow("Skills > " .. skillName .. " > Gear")
+        addSkillSubTabs(skillName, "gear")
+        view:AddTitle(skillName .. " gear")
+        if gear == nil then
+            view:AddText("Gear for this skill isn't available yet.")
+            return
+        end
+
+        local level = Skills.read(Skills.find(skillName))
+        view:AddText({ text = "Green = you're wearing or carrying it. The bank can't be checked.",
+            colour = GREY })
+
+        local carried = Checks.carriedItems()
+        local myBand = level and Gear.bandFor(gear, level) or nil
+        local myBandTitle = nil
+
+        for _, band in ipairs(gear.bands) do
+            local title = "Levels " .. band.from .. " to " .. (band.to - 1)
+            if band == myBand then title = title .. "  (you are here)" end
+            local titleText = view:AddTitle(title)
+            if band == myBand then myBandTitle = titleText end
+
+            for _, item in ipairs(band.items) do
+                -- "[OK] Tool: Bronze hatchet" in green when owned, red when not.
+                local owned = Checks.item(item, carried)
+                owned.text = (item.slot or "Item") .. ": " .. owned.text
+                addCheckLine(owned)
+                for _, levelReq in ipairs(item.levels or {}) do
+                    local line = Checks.level(levelReq)
+                    line.text = "   Needs " .. line.text
+                    addCheckLine(line)
+                end
+                local tradeText = (item.tradeable == true and "Tradeable: yes (Grand Exchange)")
+                    or (item.tradeable == false and "Tradeable: no") or nil
+                if tradeText then view:AddText({ text = "   " .. tradeText, colour = WHITE }) end
+                if item.obtain then view:AddText("   How to get: " .. item.obtain) end
+                if item.notes then view:AddText({ text = "   " .. item.notes, colour = GREY }) end
+                addWikiButton(item.wiki, "Wiki: " .. item.label)
+            end
+        end
+
+        view:AddText({ text = gear.source or "Data: RuneScape Wiki (CC BY-NC-SA 3.0)", colour = GREY })
+        if myBandTitle and not keepScroll then view:ScrollToChild(myBandTitle) end
+    end,
+    signature = function(skillName)
+        local gear = Gear.bySkill[skillName]
+        if gear == nil then return "" end
+        local carried = Checks.carriedItems()
+        local parts = { tostring(Skills.read(Skills.find(skillName))) }
+        for _, band in ipairs(gear.bands) do
+            for _, item in ipairs(band.items) do parts[#parts + 1] = Checks.item(item, carried).state end
         end
         return table.concat(parts, "|")
     end,
@@ -499,6 +584,23 @@ PAGES.method = {
                 .. "can't be checked.", colour = GREY })
         end
 
+        -- Recommended setup, to copy into your own preset.
+        local inventory = Gear.inventoryFor(method.id)
+        if inventory then
+            view:AddTitle("Recommended inventory / preset")
+            if inventory.notes then view:AddText(inventory.notes) end
+            if inventory.wear and #inventory.wear > 0 then
+                view:AddText({ text = "Wear:", colour = GOLD })
+                addItemChecks(inventory.wear, Checks.carriedItems())
+            end
+            if inventory.carry and #inventory.carry > 0 then
+                view:AddText({ text = "Carry:", colour = GOLD })
+                addItemChecks(inventory.carry, Checks.carriedItems())
+            end
+            view:AddText({ text = "Plugins can't make presets, but you can save this setup as one "
+                .. "at a bank.", colour = GREY })
+        end
+
         view:AddTitle("More")
         if method.activity and Activities.byId[method.activity] then
             view:AddSimpleButton("Open activity helper", function()
@@ -516,6 +618,13 @@ PAGES.method = {
         for _, line in ipairs(checks.items) do parts[#parts + 1] = line.state .. line.text end
         for _, entry in ipairs(checks.regions) do
             for _, line in ipairs(entry.lines) do parts[#parts + 1] = line.state .. line.text end
+        end
+        local inventory = Gear.inventoryFor(methodId)
+        if inventory then
+            local carried = Checks.carriedItems()
+            for _, list in ipairs({ inventory.wear or {}, inventory.carry or {} }) do
+                for _, item in ipairs(list) do parts[#parts + 1] = Checks.item(item, carried).state end
+            end
         end
         return table.concat(parts, "|")
     end,

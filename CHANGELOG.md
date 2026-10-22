@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.9
+
+- Each skill guide has two tabs: Training (the methods) and Gear.
+- Gear tab: gear by level band with "(you are here)"; each item green when worn/carried, level requirements checked, tradeable yes/no, how to get it, and a wiki link. Data in src/gear/<skill>.lua (format: docs/gear-format.md), loaded by src/gear/index.lua.
+- Method pages: "Recommended inventory / preset" (what to wear and carry, each checked green/red) where the wiki recommends a setup.
+- tools/validate_guides.lua also checks gear files.
+
 ## 0.1.8
 
 - Guides for all 29 skills (578 methods), researched from the RuneScape Wiki (CC BY-NC-SA 3.0). Format: docs/guide-format.md.

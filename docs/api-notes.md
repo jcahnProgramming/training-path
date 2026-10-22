@@ -95,6 +95,11 @@ as installed on 2026-10-21). "Seen in" names the plugin that demonstrates it.
 - Scrolling content: `prettyui.SimpleView.new(root, {x, y, width, height, contentHeight, scrollStep})`.
 
 ## Gotchas
+- SUSPECTED (v0.1.9, unconfirmed): a file and a folder with the same name (`src/gear.lua` + `src/gear/`)
+  made `prl training-path` say "plugin not found". Keep loaders inside their folder (`src/x/index.lua`).
+- After that, one `prl` ran the new main.lua with OLD copies of other modules (old UI, new version
+  number). The next `prl` loaded everything fresh. If the UI doesn't match the code, reload again and
+  add a print to the changed module to prove which copy runs.
 - Touching a destroyed component can crash the client, even inside pcall (Quest Helper comment).
 - Clamp saved window positions to the screen.
 - `e.timeDeltaSecs` on Draw is buggy (Quest Helper uses a fixed 0.02).

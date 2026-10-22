@@ -84,13 +84,13 @@ return {
                     id = "prayer_bonecrusher",
                     name = "Bonecrusher while fighting",
                     intensity = "medium",
-                    notes = "Buries dropped bones for you. Can be on the tool belt. 34,000 Dungeoneering tokens.",
+                    notes = "Buries dropped bones for you. Can be on the tool belt. 50,000 Dungeoneering tokens (since May 2026).",
                     crossovers = "Trains combat at the same time",
                     wiki = "https://runescape.wiki/w/Bonecrusher",
                     requirements = {
                         levels = {
                             { skill = "Prayer", level = 21 },
-                            { skill = "Dungeoneering", level = 21 },
+                            { skill = "Dungeoneering", level = 41 },
                         },
                     },
                 },
