@@ -53,7 +53,7 @@ return {
                     money = "Profitable",
                     notes = "Fletching the unstrung bows is 83k XP/hr. Shortbows: 35+, 99.6k XP/hr.",
                     wiki = "https://runescape.wiki/w/Willow_longbow",
-                    requirements = { levels = { { skill = "Fletching", level = 40 } } },
+                    requirements = { levels = { { skill = "Fletching", level = 25 } } },
                     items = {
                         { label = "Willow longbow (u)", names = { "Willow longbow (u)" } },
                         { label = "Bowstrings", names = { "Bowstring" } },

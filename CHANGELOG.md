@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.12
+
+- Activity helpers for every skill (154, plus the urn one): setup checklist (green/red), how to get there, numbered steps, tips, live tracking, "when you're done", and daily/weekly limits. Data in src/activities/<skill>.lua (format: docs/activity-format.md). Method pages have an "Activity helper: ..." button per activity.
+- New "Now" tab:
+  - Game date/time and countdowns to the daily, weekly (Wednesday) and monthly resets.
+  - "On the calendar today", read from the game's own events calendar. Only events running today are shown, never future ones.
+  - "Worth training now": skills featured in today's events, and the five skills closest to a level-up.
+  - Distractions & Diversions (30, from the wiki) grouped by daily / weekly / monthly / timer / any time, with reset countdowns and whether you meet the requirements; each opens a page with reward, requirements, directions and wiki link.
+- Time comes from the game variable CLOCK_TIME_DATE_MINUTES (Lua's os library isn't available to plugins). New src/gametime.lua, src/calendar.lua, src/dnd.lua.
+- Data fixes found while writing activities (checked on the wiki): Willow longbow Fletching 25; cleansing crystals need 75 Prayer; Sift Soil needs 91 Magic and Lunar Diplomacy; hydrix dragons need 101 Slayer; Green Gobbo Goodies needs 83 Archaeology; net trapping needs the small fishing net in the backpack (not the tool belt).
+
 ## 0.1.11
 
 - Every new page opens at the top (guides and gear no longer jump down to your band; it's open and highlighted instead).

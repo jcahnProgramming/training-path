@@ -143,7 +143,7 @@ return {
                     notes = "3 net traps at 59, 4 at 60. Ourania Cave bank costs 20 runes.",
                     wiki = "https://runescape.wiki/w/Red_salamander",
                     items = {
-                        { label = "Small fishing nets", names = { "Small fishing net" }, count = 3, toolBelt = true },
+                        { label = "Small fishing nets", names = { "Small fishing net" }, count = 3 },
                         { label = "Rope", names = { "Rope" }, count = 3 },
                     },
                 },
@@ -172,7 +172,7 @@ return {
                         levels = { { skill = "Hunter", level = 67 } },
                     },
                     items = {
-                        { label = "Small fishing nets", names = { "Small fishing net" }, count = 4, toolBelt = true },
+                        { label = "Small fishing nets", names = { "Small fishing net" }, count = 4 },
                         { label = "Rope", names = { "Rope" }, count = 4 },
                     },
                 },
@@ -227,7 +227,7 @@ return {
                     notes = "Wilderness: other players can attack you.",
                     wiki = "https://runescape.wiki/w/Black_salamander",
                     items = {
-                        { label = "Small fishing nets", names = { "Small fishing net" }, count = 4, toolBelt = true },
+                        { label = "Small fishing nets", names = { "Small fishing net" }, count = 4 },
                         { label = "Rope", names = { "Rope" }, count = 4 },
                     },
                 },

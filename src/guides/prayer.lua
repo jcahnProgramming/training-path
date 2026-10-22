@@ -169,6 +169,7 @@ return {
                     notes = "9,800 XP per crystal, 2 minutes each. No banking.",
                     wiki = "https://runescape.wiki/w/Cleansing_crystal",
                     requirements = {
+                        levels = { { skill = "Prayer", level = 75 } },
                         quests = { "Plague's End" },
                     },
                     items = {

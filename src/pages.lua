@@ -32,6 +32,16 @@ local Gear = require("src/gear/index")
 local Icons = require("src/icons")
 local ItemIndex = require("src/itemindex")
 local Settings = require("src/settings")
+local GameTime = require("src/gametime")
+local Calendar = require("src/calendar")
+
+-- Distractions & Diversions data (src/dnd.lua). A broken file just means
+-- the Now tab shows no D&Ds.
+local okDnd, DnD = pcall(require, "src/dnd")
+if not okDnd or type(DnD) ~= "table" then
+    print("[Training Path] Couldn't load src/dnd.lua: " .. tostring(DnD))
+    DnD = { list = {} }
+end
 
 local Pages = {}
 
@@ -257,6 +267,7 @@ local function addTabs()
     local tabs = {
         { name = "skills", label = "Skills" },
         { name = "levels", label = "Levels" },
+        { name = "now", label = "Now" },
     }
     -- Which tab is "home" for the current page (guide pages belong to Skills).
     local activeTab = history[1] and history[1].name or current.name
@@ -410,6 +421,215 @@ PAGES.skills = {
         local parts = { Settings.get("skillsView"), Settings.get("bestIntensity") }
         for _, skill in ipairs(Skills.list) do parts[#parts + 1] = tostring(Skills.read(skill)) end
         return table.concat(parts, ",")
+    end,
+}
+
+----------------------------------------------------------------------------
+-- Now tab: today's events, resets, D&Ds and skills worth training
+----------------------------------------------------------------------------
+
+-- Words used to spot a skill being mentioned in an event's text.
+local function skillsMentioned(text)
+    local found = {}
+    local lower = string.lower(text or "")
+    for _, skill in ipairs(Skills.list) do
+        if string.find(lower, string.lower(skill.name), 1, true) then found[#found + 1] = skill.name end
+    end
+    return found
+end
+
+-- "Ready" / what's missing for a D&D's requirements (levels and quests).
+local function dndStatus(entry)
+    local req = entry.requirements or {}
+    local missing = {}
+    for _, levelReq in ipairs(req.levels or {}) do
+        local line = Checks.level(levelReq)
+        if line.state == "todo" then missing[#missing + 1] = line.text end
+    end
+    for _, questName in ipairs(req.quests or {}) do
+        local line = Checks.quest(questName)
+        if line.state == "todo" then missing[#missing + 1] = line.text end
+    end
+    if #missing == 0 then return { state = "ok", text = "You can do this" } end
+    return { state = "todo", text = "Needs: " .. table.concat(missing, ", ") }
+end
+
+-- How often a D&D repeats, with a countdown where we can work one out.
+local function dndTiming(entry, resets)
+    if entry.resets == "daily" then return "Daily - resets in " .. GameTime.formatMinutes(resets.daily) end
+    if entry.resets == "weekly" then return "Weekly - resets in " .. GameTime.formatMinutes(resets.weekly) end
+    if entry.resets == "monthly" then return "Monthly - resets in " .. GameTime.formatMinutes(resets.monthly) end
+    if entry.resets == "every_n_hours" and entry.everyHours then
+        local hours = entry.everyHours
+        local every = (hours < 1) and (math.floor(hours * 60 + 0.5) .. " minutes") or (hours .. " hours")
+        return "Every " .. every
+    end
+    return "Any time"
+end
+
+local DND_GROUPS = {
+    { resets = "daily", title = "Daily" },
+    { resets = "weekly", title = "Weekly" },
+    { resets = "monthly", title = "Monthly" },
+    { resets = "every_n_hours", title = "On a timer" },
+    { resets = "scheduled", title = "Any time" },
+}
+
+PAGES.now = {
+    build = function()
+        view:AddTitle("Right now")
+        local now = GameTime.now()
+        if now == nil then
+            view:AddText("Log in to see the game time, today's events and resets.")
+            return
+        end
+        view:AddText({ text = now.text .. " (game time)", colour = GOLD })
+
+        -- Resets
+        local resets = GameTime.untilResets(now)
+        view:AddTitle("Resets")
+        view:AddText("Daily reset in " .. GameTime.formatMinutes(resets.daily))
+        view:AddText("Weekly reset (Wednesday) in " .. GameTime.formatMinutes(resets.weekly))
+        view:AddText("Monthly reset in " .. GameTime.formatMinutes(resets.monthly))
+
+        -- Today's calendar (only what's running today; never future events)
+        local worthSkills = {}
+        view:AddTitle("On the calendar today")
+        if not Calendar.isReady() then
+            view:AddText({ text = "Reading the in-game calendar...", colour = GREY })
+        else
+            local todays = Calendar.today(now.runeday)
+            if #todays == 0 then view:AddText({ text = "Nothing on the calendar today.", colour = GREY }) end
+            for _, entry in ipairs(todays) do
+                local category = Calendar.categoryName(entry.category)
+                view:AddText({ text = entry.title, colour = GOLD })
+                local when
+                if entry.endDay > entry.startDay then
+                    when = "Until " .. GameTime.runedayText(entry.endDay)
+                elseif type(entry.startTime) == "number" and entry.startTime > 0 then
+                    when = string.format("Today at %02d:%02d UTC", entry.startTime // 100, entry.startTime % 100)
+                    if type(entry.length) == "number" and entry.length > 0 then
+                        when = when .. " for " .. entry.length .. " minutes"
+                    end
+                else
+                    when = "Today"
+                end
+                view:AddText({ text = (category and (category .. " - ") or "") .. when, colour = WHITE })
+                if entry.description then view:AddText({ text = entry.description, colour = GREY }) end
+                for _, skillName in ipairs(skillsMentioned(entry.title .. " " .. (entry.description or ""))) do
+                    worthSkills[skillName] = entry.title
+                end
+            end
+        end
+
+        -- Skills worth training now
+        view:AddTitle("Worth training now")
+        local any = false
+        for _, skill in ipairs(Skills.list) do
+            if worthSkills[skill.name] then
+                any = true
+                addSkillIcon(skill.name, 32, false)
+                view:AddText({ text = skill.name .. ": featured in " .. worthSkills[skill.name],
+                    inline = true, offsetY = 4 })
+            end
+        end
+        -- Quick level-ups: the skills closest to their next level.
+        local close = {}
+        for _, skill in ipairs(Skills.list) do
+            local level, xp = Skills.read(skill)
+            if level and level < 99 then
+                local from, to = Tracker.xpForLevel(level), Tracker.xpForLevel(level + 1)
+                close[#close + 1] = { skill = skill, level = level, left = to - xp, part = (xp - from) / math.max(1, to - from) }
+            end
+        end
+        table.sort(close, function(a, b) return a.part > b.part end)
+        if #close > 0 then
+            view:AddText({ text = "Closest to a level-up:", colour = GOLD })
+            for i = 1, math.min(5, #close) do
+                local c = close[i]
+                addSkillIcon(c.skill.name, 32, false)
+                view:AddText({ text = c.skill.name .. ": " .. math.floor(c.part * 100) .. "% to level "
+                    .. (c.level + 1) .. " (" .. Skills.formatNumber(c.left) .. " XP)", inline = true, offsetY = 4 })
+            end
+            any = true
+        end
+        if not any then view:AddText({ text = "Nothing special today.", colour = GREY }) end
+
+        -- Distractions & Diversions
+        view:AddTitle("Distractions & Diversions")
+        view:AddText({ text = "The plugin can't see yet whether you've done these this period, "
+            .. "only when they reset.", colour = GREY })
+        for _, group in ipairs(DND_GROUPS) do
+            local inGroup = {}
+            for _, entry in ipairs(DnD.list or {}) do
+                if entry.resets == group.resets then inGroup[#inGroup + 1] = entry end
+            end
+            if #inGroup > 0 then
+                view:AddText({ text = group.title, colour = GOLD })
+                for _, entry in ipairs(inGroup) do
+                    view:AddSimpleButton(entry.name, function() Pages.open("dnd", entry.id) end,
+                        { width = columnWidth(1) })
+                    view:AddText({ text = dndTiming(entry, resets), colour = WHITE })
+                    addCheckLine(dndStatus(entry))
+                end
+            end
+        end
+        view:AddText({ text = DnD.source or "Data: RuneScape Wiki (CC BY-NC-SA 3.0)", colour = GREY })
+    end,
+    signature = function()
+        -- Redraw once a minute (the clock), when levels change, or when the
+        -- calendar finishes loading.
+        local now = GameTime.nowMinutes() or 0
+        local parts = { tostring(now), tostring(Calendar.isReady()) }
+        for _, skill in ipairs(Skills.list) do parts[#parts + 1] = tostring(Skills.read(skill)) end
+        return table.concat(parts, ",")
+    end,
+}
+
+-- One D&D in detail (arg = D&D id).
+PAGES.dnd = {
+    build = function(dndId)
+        local entry = nil
+        for _, candidate in ipairs(DnD.list or {}) do
+            if candidate.id == dndId then entry = candidate end
+        end
+        addBackRow("Now > " .. (entry and entry.name or "?"))
+        if entry == nil then
+            view:AddText("This activity isn't available.")
+            return
+        end
+        view:AddTitle(entry.name)
+        local now = GameTime.now()
+        if now then view:AddText({ text = dndTiming(entry, GameTime.untilResets(now)), colour = AMBER }) end
+        if entry.resetRule then view:AddText({ text = entry.resetRule, colour = GREY }) end
+        if entry.reward then view:AddText("Reward: " .. entry.reward) end
+        if entry.skills and #entry.skills > 0 then view:AddText("Skills: " .. table.concat(entry.skills, ", ")) end
+        if entry.notes then view:AddText(entry.notes) end
+
+        local req = entry.requirements or {}
+        if (req.levels and #req.levels > 0) or (req.quests and #req.quests > 0) or (req.other and #req.other > 0) then
+            view:AddTitle("Requirements")
+            for _, levelReq in ipairs(req.levels or {}) do addCheckLine(Checks.level(levelReq)) end
+            for _, questName in ipairs(req.quests or {}) do addCheckLine(Checks.quest(questName)) end
+            for _, text in ipairs(req.other or {}) do addCheckLine({ state = "info", text = text }) end
+        end
+
+        if entry.location or entry.directions then
+            view:AddTitle("How to get there")
+            if entry.location then view:AddText({ text = entry.location, colour = GOLD }) end
+            if entry.directions then view:AddText(entry.directions) end
+            if entry.coord and Compass.current() ~= entry.name then
+                view:AddSimpleButton("Show directions", function()
+                    Compass.start(entry.name, entry.coord)
+                    Pages.redraw()
+                end)
+            end
+        end
+        view:AddTitle("More")
+        addWikiButton(entry.wiki)
+    end,
+    signature = function()
+        return tostring(GameTime.nowMinutes())
     end,
 }
 
@@ -761,9 +981,10 @@ PAGES.method = {
         end
 
         view:AddTitle("More")
-        if method.activity and Activities.byId[method.activity] then
-            view:AddSimpleButton("Open activity helper", function()
-                Pages.open("activity", method.activity)
+        -- One button per activity helper for this method.
+        for _, activity in ipairs(Activities.forMethod(method.id)) do
+            view:AddSimpleButton("Activity helper: " .. activity.title, function()
+                Pages.open("activity", activity.id)
             end)
         end
         addWikiButton(method.wiki)
@@ -847,13 +1068,40 @@ PAGES.activity = {
         end
         if not keepScroll or session == nil then startTracking(activity) end
 
-        view:AddTitle(activity.title)
-        view:AddText({ text = "Where: " .. activity.location, colour = GOLD })
-        view:AddText(activity.intro)
+        addSkillIcon(activity.skill, 40, false)
+        view:AddTitle({ text = activity.title, inline = true, offsetY = 6 })
+        if activity.intro then view:AddText(activity.intro) end
+        if activity.repeats then
+            view:AddText({ text = "Repeats: " .. activity.repeats
+                .. (activity.repeatNote and (". " .. activity.repeatNote) or ""), colour = AMBER })
+        end
+
+        -- How to get there (directions only; see the method page for more).
+        if activity.location then
+            view:AddTitle("How to get there")
+            view:AddText({ text = activity.location, colour = GOLD })
+            local travel = Travel.byLocation[activity.location]
+            if travel and travel.directions then view:AddText(travel.directions) end
+            if travel and travel.coord and Compass.current() ~= activity.location then
+                view:AddSimpleButton("Show directions", function()
+                    Compass.start(activity.location, travel.coord)
+                    Pages.redraw()
+                end)
+            end
+        end
 
         view:AddTitle("Setup checklist")
         for _, line in ipairs(activity.checklist()) do addCheckLine(line) end
         view:AddText({ text = "Updates by itself as your backpack changes.", colour = GREY })
+
+        if activity.steps and #activity.steps > 0 then
+            view:AddTitle("Steps")
+            for i, step in ipairs(activity.steps) do view:AddText(i .. ". " .. step) end
+        end
+        if activity.tips and #activity.tips > 0 then
+            view:AddTitle("Tips")
+            for _, tip in ipairs(activity.tips) do view:AddText("- " .. tip) end
+        end
 
         view:AddTitle("Live tracking")
         trackLines = {
@@ -873,6 +1121,11 @@ PAGES.activity = {
             startTracking(activity)
             refreshTracking(activity)
         end)
+
+        if activity.finish and #activity.finish > 0 then
+            view:AddTitle("When you're done")
+            for _, line in ipairs(activity.finish) do view:AddText("- " .. line) end
+        end
 
         refreshTracking(activity)
         liveUpdate = function() refreshTracking(activity) end
@@ -894,6 +1147,7 @@ PAGES.activity = {
 function Pages.start(prettyWindow)
     window = prettyWindow
     ItemIndex.start()   -- builds item icons in the background
+    Calendar.start()    -- reads the in-game calendar in the background
     Pages.switchTab("skills")
 end
 
@@ -921,6 +1175,7 @@ end
 -- Remove the page (on plugin shutdown).
 function Pages.stop()
     ItemIndex.stop()
+    Calendar.stop()
     Tracker.shutdown()
     if view then view:Destroy() end
     view = nil

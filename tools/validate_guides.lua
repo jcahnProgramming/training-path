@@ -261,5 +261,76 @@ for _, skill in ipairs(SKILLS) do
 end
 print(string.format("gear: %d skills, %d items", gearFiles, gearItems))
 
+----------------------------------------------------------------------------
+-- Activities (src/activities/<skill>.lua, docs/activity-format.md)
+----------------------------------------------------------------------------
+local function noLessThanAnywhere(value, where)
+    if type(value) == "string" and value:find("<", 1, true) then problem(where, "contains '<'") end
+    if type(value) == "table" then for k, v in pairs(value) do noLessThanAnywhere(v, where .. "." .. tostring(k)) end end
+end
+local activityIds, activityCount = {}, 0
+for _, skill in ipairs(SKILLS) do
+    local path = "src/activities/" .. skill:lower() .. ".lua"
+    local chunk = loadfile(path)
+    if chunk then
+        local ok, data = pcall(chunk)
+        if not ok or type(data) ~= "table" or type(data.activities) ~= "table" then
+            problem(path, "didn't return { activities = ... }")
+        else
+            checkAscii(data, path)
+            noLessThanAnywhere(data, path)
+            for i, a in ipairs(data.activities) do
+                local where = path .. " activity " .. i .. " (" .. tostring(a.id) .. ")"
+                activityCount = activityCount + 1
+                if type(a.id) ~= "string" then problem(where, "missing id")
+                elseif activityIds[a.id] then problem(where, "duplicate id")
+                else activityIds[a.id] = true end
+                if not seenIds[a.method] then problem(where, "method doesn't exist: " .. tostring(a.method)) end
+                if type(a.title) ~= "string" then problem(where, "missing title") end
+                if type(a.steps) ~= "table" or #a.steps == 0 then problem(where, "no steps") end
+                local list = a.checklist or {}
+                for _, levelReq in ipairs(list.levels or {}) do
+                    if not isSkill[levelReq.skill] then problem(where, "unknown skill " .. tostring(levelReq.skill)) end
+                end
+                for _, item in ipairs(list.items or {}) do checkItemSpec(item, where) end
+                if a.repeats ~= nil and not ({ hourly = 1, daily = 1, weekly = 1, monthly = 1 })[a.repeats] then
+                    problem(where, "repeats must be hourly/daily/weekly/monthly")
+                end
+            end
+        end
+    end
+end
+print(string.format("activities: %d", activityCount))
+
+----------------------------------------------------------------------------
+-- Distractions & Diversions (src/dnd.lua)
+----------------------------------------------------------------------------
+do
+    local chunk, err = loadfile("src/dnd.lua")
+    if chunk == nil then
+        problem("src/dnd.lua", tostring(err))
+    else
+        local dnd = chunk()
+        checkAscii(dnd, "dnd")
+        noLessThanAnywhere(dnd, "dnd")
+        local RESETS = { hourly = 1, daily = 1, weekly = 1, monthly = 1, every_n_hours = 1, scheduled = 1 }
+        local seen = {}
+        for i, d in ipairs(dnd.list or {}) do
+            local where = "dnd " .. i .. " (" .. tostring(d.id) .. ")"
+            if seen[d.id] then problem(where, "duplicate id") end
+            seen[d.id] = true
+            if not RESETS[d.resets] then problem(where, "bad resets " .. tostring(d.resets)) end
+            if d.resets == "every_n_hours" and type(d.everyHours) ~= "number" then problem(where, "needs everyHours") end
+            for _, sk in ipairs(d.skills or {}) do
+                if not isSkill[sk] and sk ~= "lowest" and sk ~= "choice" and sk ~= "combat" then problem(where, "unknown skill " .. sk) end
+            end
+            for _, levelReq in ipairs((d.requirements or {}).levels or {}) do
+                if not isSkill[levelReq.skill] then problem(where, "unknown skill " .. tostring(levelReq.skill)) end
+            end
+        end
+        print(string.format("dnd: %d", #(dnd.list or {})))
+    end
+end
+
 print(string.format("%d methods checked, %d problems", totalMethods, problems))
 os.exit(problems == 0 and 0 or 1)

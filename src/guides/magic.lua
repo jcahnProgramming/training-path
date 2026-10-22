@@ -315,6 +315,11 @@ return {
                     notes = "Over 500k XP/hr with the master archaeologist's outfit. One astral rune per cast with a mud battlestaff.",
                     crossovers = "Soil comes from Archaeology",
                     wiki = "https://runescape.wiki/w/Sift_Soil",
+                    requirements = {
+                        levels = { { skill = "Magic", level = 91 } },
+                        quests = { "Lunar Diplomacy" },
+                        other = { "Lunar spellbook" },
+                    },
                     items = {
                         { label = "Astral runes", names = { "Astral rune" } },
                         { label = "Mud battlestaff", contains = { "mud battlestaff", "mud staff" } },

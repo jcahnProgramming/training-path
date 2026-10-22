@@ -254,7 +254,7 @@ return {
                     notes = "Ranged. Placing one in the Sunken Pyramid allows AFK training.",
                     wiki = "https://runescape.wiki/w/Gemstone_dragon",
                     requirements = {
-                        levels = { { skill = "Slayer", level = 95 } },
+                        levels = { { skill = "Slayer", level = 101 } },
                     },
                 },
                 {
@@ -300,7 +300,7 @@ return {
                     notes = "Ranged. Placing one in the Sunken Pyramid allows AFK training.",
                     wiki = "https://runescape.wiki/w/Gemstone_dragon",
                     requirements = {
-                        levels = { { skill = "Slayer", level = 95 } },
+                        levels = { { skill = "Slayer", level = 101 } },
                     },
                 },
                 {

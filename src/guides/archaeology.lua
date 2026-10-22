@@ -276,7 +276,7 @@ return {
                     notes = "Green Gobbo Goodies I gives 34,533.5 XP per completion.",
                     wiki = "https://runescape.wiki/w/Warforge_Dig_Site",
                     requirements = {
-                        levels = { { skill = "Archaeology", level = 76 } },
+                        levels = { { skill = "Archaeology", level = 83 } },
                     },
                 },
             },

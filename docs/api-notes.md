@@ -68,6 +68,19 @@ as installed on 2026-10-21). "Seen in" names the plugin that demonstrates it.
   destination area from the wiki, one at a time, never in combat. Mention this in the submission notes.
 - Text: "<" starts a text tag in game strings; write "<lt>" for a literal "<".
 
+## Time and calendar (tested in-game 2026-10-22)
+- `os` is NOT available to plugins (no os.time / os.date).
+- Clock: `var.VarPlayer.CLOCK_TIME_DATE_MINUTES.value` = minutes since 1970-01-01 UTC (e.g. 29877597 =
+  2026-10-22 07:57 UTC, matched the minimap clock). Updates once a minute.
+- Day counters: several `*_RUNEDAY` vars = 9003 on 2026-10-22 (game "runeday").
+- Some D&D state is readable, e.g. `TOG_DATE_BEFORE_RETURN` (Tears of Guthix), `BIGCHINCHOMPA_*`,
+  `EVILTREE_*`; `UAUI_DND_TIMER_1..3` look like packed D&D timers (format unknown).
+- Double XP / bonus: `DOUBLEXP_RUNNINGTOTAL`, `DOUBLEXP_MULTIPLIER`, `BONUS_XP_CHARGE`.
+- Calendar data: DBTables `CALENDAR_ENTRY` (285, 36 columns), `CALENDAR_CATEGORY` (284),
+  `WEEKEND_EVENTS` (77), `EVENT_WEEKEND` (13). Must only show what the in-game calendar shows
+  (no hidden/future events).
+- Cheats exist for testing (`!give item`, `!tele`, `!skillsetlevel`, `!getvar name`...): see docs cheats page.
+
 ## Events and timing
 - `Event.X.Subscribe("unique-id", fn)` / `Event.X.Unsubscribe("unique-id")`.
 - `Event.Logic`: 50 per second, `e.logicTick`. `Event.ServerLogic`: once per 0.6 s game tick.

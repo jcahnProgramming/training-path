@@ -41,10 +41,9 @@ local net = {
     slot = "Tool",
     label = "Small fishing net",
     names = { "Small fishing net" },
-    toolBelt = true,
     tradeable = true,
     obtain = "Fishing shops, or the Grand Exchange.",
-    notes = "Each net trap needs a small fishing net and a rope.",
+    notes = "Each net trap needs a small fishing net and a rope in the backpack (the tool belt doesn't count).",
     wiki = "https://runescape.wiki/w/Small_fishing_net",
 }
 
@@ -248,7 +247,7 @@ return {
         hunter_red_salamander = {
             notes = "Each net trap needs its own net and rope.",
             carry = {
-                { label = "Small fishing nets", names = { "Small fishing net" }, count = 3, toolBelt = true },
+                { label = "Small fishing nets", names = { "Small fishing net" }, count = 3 },
                 { label = "Rope", names = { "Rope" }, count = 3 },
                 { label = "Hunter urn", contains = { "hunter urn" } },
             },
@@ -256,7 +255,7 @@ return {
         hunter_black_salamander = {
             notes = "Wilderness: bring only what you can afford to lose.",
             carry = {
-                { label = "Small fishing nets", names = { "Small fishing net" }, count = 4, toolBelt = true },
+                { label = "Small fishing nets", names = { "Small fishing net" }, count = 4 },
                 { label = "Rope", names = { "Rope" }, count = 4 },
                 { label = "Hunter urn", contains = { "hunter urn" } },
             },
@@ -264,7 +263,7 @@ return {
         hunter_black_salamander_70 = {
             notes = "Wilderness: bring only what you can afford to lose.",
             carry = {
-                { label = "Small fishing nets", names = { "Small fishing net" }, count = 4, toolBelt = true },
+                { label = "Small fishing nets", names = { "Small fishing net" }, count = 4 },
                 { label = "Rope", names = { "Rope" }, count = 4 },
                 { label = "Hunter urn", contains = { "hunter urn" } },
             },
