@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.15
+
+- Training queue:
+  - Method pages have "Add to queue": train for 15 min / 30 min / 1 hour / 2 hours, or until a level (next level, end of the method's level range, or the skill's max).
+  - New "Queue" tab: entries in order with skill icon, goal, progress ("23 / 60 min", "Level 64 / 70, 12,345 XP to go") and Now / Up next / Done; Up, Down, Open, Remove; Pause/Resume, "Done, next" and "Clear finished".
+  - Timers count game-clock minutes only while logged in and not paused; level goals finish when your real level reaches the target. Then the next entry starts by itself.
+  - Under the nav on every page: the current queue item with its progress, and a "Finished: X. Next up: Y" banner until you press OK.
+  - Saved in PersistentDB. New src/queue.lua.
+
 ## 0.1.14
 
 - Settings > Accessibility:

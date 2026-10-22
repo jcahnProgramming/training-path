@@ -36,6 +36,7 @@ local Icons = require("src/icons")
 local ItemIndex = require("src/itemindex")
 local Settings = require("src/settings")
 local Style = require("src/style")
+local Queue = require("src/queue")
 local GameTime = require("src/gametime")
 local Calendar = require("src/calendar")
 
@@ -280,6 +281,7 @@ end
 local NAV_TABS = {
     { name = "skills", label = "Home", tooltip = "All skills" },
     { name = "now", label = "Now", tooltip = "Today's events, resets and D&Ds" },
+    { name = "queue", label = "Queue", tooltip = "Your queue of training methods" },
     { name = "levels", label = "Levels", tooltip = "Your levels and XP" },
 }
 local ICON_BUTTON = 24   -- PrettyUI's icon button size
@@ -320,6 +322,36 @@ local function addBackRow(breadcrumb)
     end
 end
 
+-- Under the nav rows, on every page except the Queue tab itself:
+--   "Finished: X. Next up: Y"  [OK]          (until dismissed)
+--   "Queue: Smithing - Burial armour, 23 / 60 min"  [Open]
+local function addQueueBanner()
+    local finishedEntry = Queue.lastFinished()
+    if finishedEntry then
+        local method = Queue.methodFor(finishedEntry)
+        local nextEntry = Queue.current()
+        local nextMethod = nextEntry and Queue.methodFor(nextEntry) or nil
+        local text = "Finished: " .. (method and method.name or "a queued method") .. ". "
+            .. (nextMethod and ("Next up: " .. nextMethod.name .. " " .. Queue.goalText(nextEntry) .. ".")
+                or "Your queue is empty.")
+        view:AddText({ text = text, colour = GREEN })
+        view:AddSimpleButton("OK", function()
+            Queue.dismissFinished()
+            Pages.redraw()
+        end)
+    end
+    if current.name == "queue" then return end
+    local entry = Queue.current()
+    local method = entry and Queue.methodFor(entry) or nil
+    if method then
+        local _, _, progress = Queue.progress(entry)
+        local skill = Queue.skillFor(entry)
+        view:AddText({ text = "Queue: " .. (skill and (skill.name .. " - ") or "") .. method.name .. ", "
+            .. progress .. (Queue.isPaused() and " (paused)" or ""), colour = AMBER })
+        view:AddSimpleButton("Open queue", function() Pages.switchTab("queue") end)
+    end
+end
+
 -- Build `current` from scratch. keepScroll = stay at the same scroll
 -- position (used when a page redraws itself).
 local function show(keepScroll)
@@ -339,6 +371,7 @@ local function show(keepScroll)
             Pages.redraw()
         end)
     end
+    addQueueBanner()
     page.build(current.arg, keepScroll)
     shownSignature = page.signature and page.signature(current.arg) or nil
     if shownSignature then shownSignature = shownSignature .. (ItemIndex.isReady() and "|icons" or "") end
@@ -668,6 +701,75 @@ PAGES.dnd = {
     end,
     signature = function()
         return tostring(GameTime.nowMinutes())
+    end,
+}
+
+----------------------------------------------------------------------------
+-- Queue tab
+----------------------------------------------------------------------------
+
+PAGES.queue = {
+    build = function()
+        view:AddTitle("Queue")
+        local entries = Queue.list()
+        if #entries == 0 then
+            view:AddText("Your queue is empty. Open any training method and use \"Add to queue\" "
+                .. "to train it for a set time or until a level.")
+            return
+        end
+
+        local currentEntry = Queue.current()
+        if currentEntry then
+            view:AddSimpleButton(Queue.isPaused() and "Resume" or "Pause", function()
+                Queue.setPaused(not Queue.isPaused())
+                Pages.redraw()
+            end, { tooltip = "Timers only count while not paused" })
+            view:AddSimpleButton("Done, next", function()
+                Queue.skipCurrent()
+                Pages.redraw()
+            end, { inline = true, tooltip = "Mark the current one finished and move on" })
+        end
+        view:AddSimpleButton("Clear finished", function()
+            Queue.clearFinished()
+            Pages.redraw()
+        end, { inline = currentEntry ~= nil })
+        view:AddText({ text = "Timers count game time while you're logged in. Level goals finish when "
+            .. "your real level reaches the target.", colour = GREY })
+
+        for index, entry in ipairs(entries) do
+            local method = Queue.methodFor(entry)
+            local skill = Queue.skillFor(entry)
+            local _, _, progress = Queue.progress(entry)
+
+            local state, colour
+            if entry.done then state, colour = "Done", GREEN
+            elseif entry == currentEntry then state, colour = (Queue.isPaused() and "Now (paused)" or "Now"), AMBER
+            else state, colour = "Up next", WHITE end
+
+            -- [icon] 1. Smithing - Burial armour
+            if skill then addSkillIcon(skill.name, 32, false) end
+            view:AddText({ text = index .. ". " .. (method and method.name or entry.method),
+                colour = GOLD, inline = skill ~= nil, offsetY = 4 })
+            view:AddText({ text = state .. " - " .. Queue.goalText(entry) .. " - " .. progress, colour = colour })
+
+            -- [Up] [Down] [Open] [Remove]
+            view:AddSimpleButton("Up", function() Queue.move(index, -1) Pages.redraw() end,
+                { disabled = index == 1 })
+            view:AddSimpleButton("Down", function() Queue.move(index, 1) Pages.redraw() end,
+                { inline = true, disabled = index == #entries })
+            if method then
+                view:AddSimpleButton("Open", function() Pages.open("method", entry.method) end, { inline = true })
+            end
+            view:AddSimpleButton("Remove", function() Queue.remove(index) Pages.redraw() end, { inline = true })
+        end
+    end,
+    signature = function()
+        local parts = { tostring(Queue.isPaused()) }
+        for _, entry in ipairs(Queue.list()) do
+            local _, _, progress = Queue.progress(entry)
+            parts[#parts + 1] = entry.method .. tostring(entry.done) .. progress
+        end
+        return table.concat(parts, "|")
     end,
 }
 
@@ -1047,6 +1149,41 @@ PAGES.method = {
                 .. "at a bank.", colour = GREY })
         end
 
+        -- Add to queue: for a set time, or until a level.
+        view:AddTitle("Add to queue")
+        local position = Queue.positionOf(method.id)
+        if position then
+            view:AddText({ text = "In your queue (number " .. position .. ").", colour = GOLD })
+        end
+        local function queued(goal, target)
+            Queue.add(method.id, goal, target)
+            Pages.redraw()
+        end
+        view:AddText({ text = "Train for:", colour = WHITE })
+        for i, choice in ipairs({ { 15, "15 min" }, { 30, "30 min" }, { 60, "1 hour" }, { 120, "2 hours" } }) do
+            view:AddSimpleButton(choice[2], function() queued("time", choice[1]) end, { inline = i > 1 })
+        end
+        local level = Skills.read(Skills.find(guide.skill))
+        if level then
+            -- Level targets above your level: next level, end of this
+            -- method's level range, and the skill's max.
+            local targets, seen = {}, {}
+            for _, target in ipairs({ level + 1, entry.band.to, guide.maxLevel or 99 }) do
+                target = math.min(target, guide.maxLevel or 99)
+                if target > level and not seen[target] then
+                    seen[target] = true
+                    targets[#targets + 1] = target
+                end
+            end
+            if #targets > 0 then
+                view:AddText({ text = "Train until level:", colour = WHITE })
+                for i, target in ipairs(targets) do
+                    view:AddSimpleButton(tostring(target), function() queued("level", target) end,
+                        { inline = i > 1 })
+                end
+            end
+        end
+
         view:AddTitle("More")
         -- One button per activity helper for this method.
         for _, activity in ipairs(Activities.forMethod(method.id)) do
@@ -1227,6 +1364,12 @@ end
 -- Rebuild the page only if its signature changed; otherwise just run its
 -- live update (the activity tracker's numbers).
 function Pages.refresh()
+    -- The queue counts time and checks goals every tick; if it changed
+    -- (a minute passed, a goal was reached), redraw so it shows.
+    if Queue.update() then
+        show(true)
+        return
+    end
     local page = PAGES[current.name]
     local signature = page.signature and page.signature(current.arg) or nil
     -- Item icons appear once the item index finishes, so count that too.
