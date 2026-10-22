@@ -332,5 +332,52 @@ do
     end
 end
 
+----------------------------------------------------------------------------
+-- Regional content (src/regional.lua)
+----------------------------------------------------------------------------
+do
+    local chunk, err = loadfile("src/regional.lua")
+    if chunk == nil then
+        print("regional: not present (" .. tostring(err):sub(1, 60) .. ")")
+    else
+        local regional = chunk()
+        checkAscii(regional, "regional")
+        noLessThanAnywhere(regional, "regional")
+        local dndChunk = loadfile("src/dnd.lua")
+        local usedIds = {}
+        for _, d in ipairs(dndChunk and (dndChunk().list or {}) or {}) do usedIds[d.id] = "dnd" end
+        local RESETS = { hourly = 1, daily = 1, weekly = 1, monthly = 1, every_n_hours = 1, anytime = 1, scheduled = 1 }
+        local regionIds, contentCount = {}, 0
+        for r, region in ipairs(regional.regions or {}) do
+            local rwhere = "region " .. r .. " (" .. tostring(region.id) .. ")"
+            if type(region.id) ~= "string" or regionIds[region.id] then problem(rwhere, "missing or duplicate id") end
+            regionIds[region.id or ""] = true
+            if type(region.name) ~= "string" then problem(rwhere, "missing name") end
+            if type(region.wiki) ~= "string" or not region.wiki:match("^https://runescape%.wiki/") then problem(rwhere, "bad wiki") end
+            for i, entry in ipairs(region.content or {}) do
+                local where = rwhere .. " content " .. i .. " (" .. tostring(entry.id) .. ")"
+                contentCount = contentCount + 1
+                if type(entry.id) ~= "string" then problem(where, "missing id")
+                elseif usedIds[entry.id] then problem(where, "id also used in " .. usedIds[entry.id])
+                else usedIds[entry.id] = "regional" end
+                if type(entry.name) ~= "string" then problem(where, "missing name") end
+                if not RESETS[entry.resets] then problem(where, "bad resets " .. tostring(entry.resets)) end
+                if entry.resets == "every_n_hours" and type(entry.everyHours) ~= "number" then problem(where, "needs everyHours") end
+                for _, sk in ipairs(entry.skills or {}) do
+                    if not isSkill[sk] then problem(where, "unknown skill " .. tostring(sk)) end
+                end
+                for _, levelReq in ipairs((entry.requirements or {}).levels or {}) do
+                    if not isSkill[levelReq.skill] then problem(where, "unknown skill " .. tostring(levelReq.skill)) end
+                end
+                local c = entry.coord
+                if c and (type(c.x) ~= "number" or c.x < 0 or c.x > 12799 or type(c.z) ~= "number" or c.z < 0 or c.z > 12799) then
+                    problem(where, "coordinate out of range")
+                end
+            end
+        end
+        print(string.format("regional: %d regions, %d items", #(regional.regions or {}), contentCount))
+    end
+end
+
 print(string.format("%d methods checked, %d problems", totalMethods, problems))
 os.exit(problems == 0 and 0 or 1)

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.18
+
+- Regions: a new section on the Now tab with 17 regions (Menaphos, Prifddinas, Fort Forinthry, Player-owned port, The Arc, Anachronia, Morytania, Het's Oasis, Havenhythe, Daemonheim, Wilderness, Kharidian Desert, Heart of Gielinor, Mazcab, Miscellania, City of Um, Zanaris) and 40 repeatable or capped activities, researched from the wiki after the March 2026 DailyScape Overhaul.
+  - Region page: access (with a live Unlocked / Locked check for 12 regions), your progress read from the game (Menaphos district reputation, Arc chimes and taijitu), reputation tiers and what they unlock, grouped content, and related D&Ds.
+  - Same Done ticks, countdowns and limits as D&Ds.
+- D&Ds and regional content share one design: collapsible groups (Daily / Weekly / Monthly / On a timer / Any time) with "X of Y left", and cards with a Done button, timing in amber, skill icons and requirement status; done items collapse to one green line.
+- Validator checks src/regional.lua.
+
 ## 0.1.17
 
 - Distractions & Diversions can be ticked off: a Done / Undo button on each daily, weekly and monthly D&D (Now tab and its own page). A tick clears itself at that D&D's reset (00:00 UTC, Wednesday 00:00 UTC, or the 1st).

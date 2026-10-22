@@ -38,6 +38,7 @@ local Settings = require("src/settings")
 local Style = require("src/style")
 local Queue = require("src/queue")
 local DnDProgress = require("src/dndprogress")
+local Regions = require("src/regions")
 local GameTime = require("src/gametime")
 local Calendar = require("src/calendar")
 
@@ -47,6 +48,47 @@ local okDnd, DnD = pcall(require, "src/dnd")
 if not okDnd or type(DnD) ~= "table" then
     print("[Training Path] Couldn't load src/dnd.lua: " .. tostring(DnD))
     DnD = { list = {} }
+end
+
+-- Regional content (src/regional.lua): repeatable or reputation-gated
+-- content per region. Same fields as D&Ds, grouped by region.
+local okRegional, Regional = pcall(require, "src/regional")
+if not okRegional or type(Regional) ~= "table" then
+    print("[Training Path] Couldn't load src/regional.lua: " .. tostring(Regional))
+    Regional = { regions = {} }
+end
+
+-- Look up a D&D or a regional content entry by id.
+local function findRepeatable(entryId)
+    for _, entry in ipairs(DnD.list or {}) do
+        if entry.id == entryId then return entry end
+    end
+    for _, region in ipairs(Regional.regions or {}) do
+        for _, entry in ipairs(region.content or {}) do
+            if entry.id == entryId then return entry, region end
+        end
+    end
+    return nil
+end
+
+-- Progress values the game shares with plugins, per region (checked
+-- in-game, docs/api-notes.md). Only names the game actually has are shown.
+local REGION_VALUES = {
+    menaphos = {
+        { label = "Port district reputation", var = "MENAPHOS_PORT_FACTION_AMOUNT" },
+        { label = "Worker district reputation", var = "MENAPHOS_SLAVE_FACTION_AMOUNT" },
+        { label = "Merchant district reputation", var = "MENAPHOS_MERCHANT_FACTION_AMOUNT" },
+        { label = "Imperial district reputation", var = "MENAPHOS_ROYAL_FACTION_AMOUNT" },
+    },
+    the_arc = {
+        { label = "Chimes", var = "CURRENCY_ARC_CHIMES" },
+        { label = "Taijitu", var = "CURRENCY_ARC_TAIJITU" },
+    },
+}
+local function readVar(name)
+    local ok, value = pcall(function() return var.VarPlayer[name].value end)
+    if ok and type(value) == "number" then return value end
+    return nil
 end
 
 local Pages = {}
@@ -531,6 +573,7 @@ local function dndTiming(entry, resets)
     if entry.resets == "daily" then return "Daily - resets in " .. GameTime.formatMinutes(resets.daily) end
     if entry.resets == "weekly" then return "Weekly - resets in " .. GameTime.formatMinutes(resets.weekly) end
     if entry.resets == "monthly" then return "Monthly - resets in " .. GameTime.formatMinutes(resets.monthly) end
+    if entry.resets == "hourly" then return "Every hour" end
     if entry.resets == "every_n_hours" and entry.everyHours then
         local hours = entry.everyHours
         local every = (hours < 1) and (math.floor(hours * 60 + 0.5) .. " minutes") or (hours .. " hours")
@@ -539,13 +582,84 @@ local function dndTiming(entry, resets)
     return "Any time"
 end
 
-local DND_GROUPS = {
-    { resets = "daily", title = "Daily" },
-    { resets = "weekly", title = "Weekly" },
-    { resets = "monthly", title = "Monthly" },
-    { resets = "every_n_hours", title = "On a timer" },
-    { resets = "scheduled", title = "Any time" },
+-- How repeatable content is grouped, in this order. Each group lists the
+-- `resets` values that belong in it.
+local REPEAT_GROUPS = {
+    { title = "Daily", resets = { daily = true } },
+    { title = "Weekly", resets = { weekly = true } },
+    { title = "Monthly", resets = { monthly = true } },
+    { title = "On a timer", resets = { hourly = true, every_n_hours = true } },
+    { title = "Any time", resets = { scheduled = true, anytime = true } },
 }
+local DONE_WIDTH = 64
+
+-- One D&D or regional item as a card, matching the method cards:
+--   [Done] [ Name button                    ]
+--   Daily - resets in 16h - 3 per day          (amber)
+--   [skill icons]
+--   [OK] You can do this                       (or what's missing)
+-- Once ticked off it shrinks to a single green "Done" line.
+local function addRepeatableCard(entry, resets)
+    local tickable = DnDProgress.canTick(entry)
+    local done = DnDProgress.isDone(entry)
+    if tickable then
+        local tick = view:AddSimpleButton(done and "Undo" or "Done", function()
+            DnDProgress.setDone(entry, not done)
+            Pages.redraw()
+        end, { width = DONE_WIDTH, tooltip = done and "Mark as not done" or "Mark as done this period" })
+        if done then tick:SetActive(true) end
+    end
+    view:AddSimpleButton(entry.name, function() Pages.open("dnd", entry.id) end, {
+        inline = tickable,
+        width = columnWidth(1) - (tickable and (DONE_WIDTH + COLUMN_GAP) or 0),
+    })
+
+    local timing = resets and dndTiming(entry, resets) or ""
+    if entry.limit then timing = timing .. " - " .. entry.limit end
+    if done then
+        addCheckLine({ state = "ok", text = "Done - " .. timing:lower() })
+        return
+    end
+    view:AddText({ text = timing, colour = AMBER })
+
+    -- Small icons for the skills it gives XP in.
+    local first = true
+    for _, skillName in ipairs(entry.skills or {}) do
+        if Icons.skill(skillName) then
+            addSkillIcon(skillName, 24, not first)
+            first = false
+        end
+    end
+    addCheckLine(dndStatus(entry))
+end
+
+-- A list of repeatable items, grouped (Daily, Weekly...) under collapsible
+-- headers like "[-] Weekly: 3 of 9 left". keyPrefix keeps each list's
+-- open/closed state separate.
+local function addRepeatableList(entries, resets, keyPrefix)
+    for _, group in ipairs(REPEAT_GROUPS) do
+        local inGroup = {}
+        for _, entry in ipairs(entries) do
+            if group.resets[entry.resets] then inGroup[#inGroup + 1] = entry end
+        end
+        if #inGroup > 0 then
+            -- Count what's left among items you can do and can tick off.
+            local canDo, left = 0, 0
+            for _, entry in ipairs(inGroup) do
+                if DnDProgress.canTick(entry) and dndStatus(entry).state == "ok" then
+                    canDo = canDo + 1
+                    if not DnDProgress.isDone(entry) then left = left + 1 end
+                end
+            end
+            local title = group.title
+            if canDo > 0 then title = title .. ": " .. left .. " of " .. canDo .. " left" end
+            local _, open = addBandHeader(keyPrefix .. ":" .. group.title, title, left > 0)
+            if open then
+                for _, entry in ipairs(inGroup) do addRepeatableCard(entry, resets) end
+            end
+        end
+    end
+end
 
 PAGES.now = {
     build = function()
@@ -627,54 +741,32 @@ PAGES.now = {
         end
         if not any then view:AddText({ text = "Nothing special today.", colour = GREY }) end
 
-        -- Distractions & Diversions
-        view:AddTitle("Distractions & Diversions")
-        view:AddText({ text = "Press Done when you've done one. It clears itself at that D&D's "
-            .. "reset. The plugin can't see this by itself yet.", colour = GREY })
-        local DONE_WIDTH = 64
-        for _, group in ipairs(DND_GROUPS) do
-            local inGroup = {}
-            for _, entry in ipairs(DnD.list or {}) do
-                if entry.resets == group.resets then inGroup[#inGroup + 1] = entry end
-            end
-            if #inGroup > 0 then
-                -- "Weekly: 3 of 9 left" (only counting ones you can do).
-                local canDo, left = 0, 0
-                for _, entry in ipairs(inGroup) do
-                    if dndStatus(entry).state == "ok" then
-                        canDo = canDo + 1
+        -- Regions: one button each, with how many ticked items are left.
+        if #(Regional.regions or {}) > 0 then
+            view:AddTitle("Regions")
+            for _, region in ipairs(Regional.regions) do
+                local tickable, left = 0, 0
+                for _, entry in ipairs(region.content or {}) do
+                    if DnDProgress.canTick(entry) then
+                        tickable = tickable + 1
                         if not DnDProgress.isDone(entry) then left = left + 1 end
                     end
                 end
-                local header = group.title
-                if DnDProgress.canTick(inGroup[1]) then
-                    header = header .. ": " .. left .. " of " .. canDo .. " left"
-                end
-                view:AddText({ text = header, colour = GOLD })
-
-                for _, entry in ipairs(inGroup) do
-                    local tickable = DnDProgress.canTick(entry)
-                    local done = DnDProgress.isDone(entry)
-                    local nameWidth = columnWidth(1) - (tickable and (DONE_WIDTH + COLUMN_GAP) or 0)
-                    view:AddSimpleButton(entry.name, function() Pages.open("dnd", entry.id) end,
-                        { width = nameWidth })
-                    if tickable then
-                        local tick = view:AddSimpleButton(done and "Undo" or "Done", function()
-                            DnDProgress.setDone(entry, not done)
-                            Pages.redraw()
-                        end, { inline = true, width = DONE_WIDTH,
-                            tooltip = done and "Mark as not done" or "Mark as done this period" })
-                        if done then tick:SetActive(true) end
-                    end
-                    if done then
-                        addCheckLine({ state = "ok", text = "Done - " .. dndTiming(entry, resets):lower() })
-                    else
-                        view:AddText({ text = dndTiming(entry, resets), colour = WHITE })
-                        addCheckLine(dndStatus(entry))
-                    end
-                end
+                view:AddSimpleButton(region.name, function() Pages.open("region", region.id) end,
+                    { width = columnWidth(1) - 120 - COLUMN_GAP })
+                view:AddText({
+                    text = (tickable > 0) and (left .. " of " .. tickable .. " left") or "Open",
+                    colour = (tickable > 0 and left == 0) and GREEN or WHITE,
+                    inline = true, width = 120, offsetY = 0,
+                })
             end
         end
+
+        -- Distractions & Diversions
+        view:AddTitle("Distractions & Diversions")
+        view:AddText({ text = "Press Done when you've done one. It clears itself at that D&D's "
+            .. "reset. Click a group to open or close it.", colour = GREY })
+        addRepeatableList(DnD.list or {}, resets, "now:dnd")
         view:AddText({ text = DnD.source or "Data: RuneScape Wiki (CC BY-NC-SA 3.0)", colour = GREY })
     end,
     signature = function()
@@ -691,11 +783,8 @@ PAGES.now = {
 -- One D&D in detail (arg = D&D id).
 PAGES.dnd = {
     build = function(dndId)
-        local entry = nil
-        for _, candidate in ipairs(DnD.list or {}) do
-            if candidate.id == dndId then entry = candidate end
-        end
-        addBackRow("Now > " .. (entry and entry.name or "?"))
+        local entry, region = findRepeatable(dndId)
+        addBackRow("Now > " .. (region and (region.name .. " > ") or "") .. (entry and entry.name or "?"))
         if entry == nil then
             view:AddText("This activity isn't available.")
             return
@@ -713,12 +802,18 @@ PAGES.dnd = {
         end
         if entry.resetRule then view:AddText({ text = entry.resetRule, colour = GREY }) end
         if entry.reward then view:AddText("Reward: " .. entry.reward) end
+        if entry.limit then view:AddText("Limit: " .. entry.limit) end
         if entry.skills and #entry.skills > 0 then view:AddText("Skills: " .. table.concat(entry.skills, ", ")) end
         if entry.notes then view:AddText(entry.notes) end
 
         local req = entry.requirements or {}
-        if (req.levels and #req.levels > 0) or (req.quests and #req.quests > 0) or (req.other and #req.other > 0) then
+        if (req.levels and #req.levels > 0) or (req.quests and #req.quests > 0) or (req.other and #req.other > 0)
+            or req.reputationTier then
             view:AddTitle("Requirements")
+            if req.reputationTier then
+                addCheckLine({ state = "info", text = "Reputation tier " .. req.reputationTier
+                    .. (region and region.reputation and (" (" .. region.reputation.name .. ")") or "") })
+            end
             for _, levelReq in ipairs(req.levels or {}) do addCheckLine(Checks.level(levelReq)) end
             for _, questName in ipairs(req.quests or {}) do addCheckLine(Checks.quest(questName)) end
             for _, text in ipairs(req.other or {}) do addCheckLine({ state = "info", text = text }) end
@@ -739,11 +834,103 @@ PAGES.dnd = {
         addWikiButton(entry.wiki)
     end,
     signature = function(dndId)
-        local done = false
-        for _, entry in ipairs(DnD.list or {}) do
-            if entry.id == dndId then done = DnDProgress.isDone(entry) end
+        local entry = findRepeatable(dndId)
+        return tostring(GameTime.nowMinutes()) .. tostring(entry and DnDProgress.isDone(entry))
+    end,
+}
+
+----------------------------------------------------------------------------
+-- Region page (arg = region id): reputation and repeatable content
+----------------------------------------------------------------------------
+
+PAGES.region = {
+    build = function(regionId)
+        local region = nil
+        for _, candidate in ipairs(Regional.regions or {}) do
+            if candidate.id == regionId then region = candidate end
         end
-        return tostring(GameTime.nowMinutes()) .. tostring(done)
+        addBackRow("Now > " .. (region and region.name or "?"))
+        if region == nil then
+            view:AddText("This region isn't available.")
+            return
+        end
+        view:AddTitle(region.name)
+        if region.unlock then view:AddText({ text = "Access: " .. region.unlock, colour = WHITE }) end
+        -- If we know this region's unlock requirements, check them.
+        local gate = Regions.byId[region.id]
+        if gate then
+            local lines, unlocked = Checks.region(gate)
+            local checkable = false
+            for _, line in ipairs(lines) do if line.state ~= "info" then checkable = true end end
+            if checkable then
+                addCheckLine({ state = unlocked and "ok" or "todo", text = unlocked and "Unlocked" or "Locked" })
+                if not unlocked then
+                    for _, line in ipairs(lines) do addCheckLine(line) end
+                    if gate.howTo then view:AddText("How to unlock: " .. gate.howTo) end
+                end
+            end
+        end
+
+        -- Your progress: values the game shares (reputation, currencies).
+        local values = {}
+        for _, item in ipairs(REGION_VALUES[region.id] or {}) do
+            local value = readVar(item.var)
+            if value then values[#values + 1] = { label = item.label, value = value } end
+        end
+        if #values > 0 then
+            view:AddTitle("Your progress")
+            for _, v in ipairs(values) do
+                view:AddText({ text = v.label .. ": " .. Skills.formatNumber(v.value), colour = GOLD })
+            end
+        end
+
+        -- Reputation: how to earn it and what each tier unlocks.
+        local rep = region.reputation
+        if rep then
+            view:AddTitle(rep.name or "Reputation")
+            if rep.howToEarn then view:AddText(rep.howToEarn) end
+            for _, tier in ipairs(rep.tiers or {}) do
+                view:AddText({ text = "Tier " .. tostring(tier.tier)
+                    .. (tier.needs and ("  -  " .. tier.needs) or ""), colour = GOLD })
+                if tier.unlocks then view:AddText({ text = tier.unlocks, colour = WHITE }) end
+            end
+        end
+
+        -- Repeatable content, grouped and collapsible like the D&Ds.
+        local now = GameTime.now()
+        if #(region.content or {}) > 0 then
+            view:AddTitle("Content")
+            addRepeatableList(region.content, now and GameTime.untilResets(now) or nil, "region:" .. region.id)
+        end
+
+        -- Distractions & Diversions that happen in this region.
+        local related = {}
+        for _, dndId in ipairs(region.dndRefs or {}) do
+            for _, entry in ipairs(DnD.list or {}) do
+                if entry.id == dndId then related[#related + 1] = entry end
+            end
+        end
+        if #related > 0 then
+            view:AddTitle("Distractions & Diversions here")
+            local now2 = GameTime.now()
+            for _, entry in ipairs(related) do
+                addRepeatableCard(entry, now2 and GameTime.untilResets(now2) or nil)
+            end
+        end
+
+        view:AddTitle("More")
+        addWikiButton(region.wiki, region.name .. " on the wiki")
+        view:AddText({ text = Regional.source or "Data: RuneScape Wiki (CC BY-NC-SA 3.0)", colour = GREY })
+    end,
+    signature = function(regionId)
+        local parts = { tostring(GameTime.nowMinutes()) }
+        for _, region in ipairs(Regional.regions or {}) do
+            if region.id == regionId then
+                for _, entry in ipairs(region.content or {}) do parts[#parts + 1] = tostring(DnDProgress.isDone(entry)) end
+                for _, item in ipairs(REGION_VALUES[region.id] or {}) do parts[#parts + 1] = tostring(readVar(item.var)) end
+            end
+        end
+        return table.concat(parts, ",")
     end,
 }
 

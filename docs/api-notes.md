@@ -79,6 +79,11 @@ as installed on 2026-10-21). "Seen in" names the plugin that demonstrates it.
 - Calendar data: DBTables `CALENDAR_ENTRY` (285, 36 columns), `CALENDAR_CATEGORY` (284),
   `WEEKEND_EVENTS` (77), `EVENT_WEEKEND` (13). Must only show what the in-game calendar shows
   (no hidden/future events).
+- Regional progress vars (all 0 on a fresh beta account, names only verified):
+  `MENAPHOS_SLAVE_FACTION_AMOUNT`, `MENAPHOS_ROYAL_FACTION_AMOUNT`, `MENAPHOS_MERCHANT_FACTION_AMOUNT`
+  (district reputation; a 4th district var was cut off in the probe), `MENAPHOS_GOLDEN_TOUCH_ENDTIME`,
+  `CURRENCY_ARC_CHIMES`, `CURRENCY_ARC_TAIJITU`, `PLAYER_FORT_BUILDING_PERM1..10`, `POP_PORT_RESOURCE_1..9`,
+  `FARMING_REPUTATION`, `VOS_WEEKEND`.
 - Cheats exist for testing (`!give item`, `!tele`, `!skillsetlevel`, `!getvar name`...): see docs cheats page.
 
 ## Events and timing
