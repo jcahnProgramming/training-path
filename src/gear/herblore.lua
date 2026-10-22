@@ -145,7 +145,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Guam potion (unf)", names = { "Guam potion (unf)" }, count = 14 },
+                { label = "Guam potion (unfinished)", names = { "Guam potion (unfinished)" }, count = 14 },
                 { label = "Eye of newt", names = { "Eye of newt" }, count = 14 },
             },
         },
@@ -155,7 +155,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Tarromin potion (unf)", names = { "Tarromin potion (unf)" }, count = 14 },
+                { label = "Tarromin potion (unfinished)", names = { "Tarromin potion (unfinished)" }, count = 14 },
                 { label = "Limpwurt root", names = { "Limpwurt root" }, count = 14 },
             },
         },
@@ -165,7 +165,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Harralander potion (unf)", names = { "Harralander potion (unf)" }, count = 14 },
+                { label = "Harralander potion (unfinished)", names = { "Harralander potion (unfinished)" }, count = 14 },
                 { label = "Chocolate dust", names = { "Chocolate dust" }, count = 14 },
             },
         },
@@ -175,7 +175,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Ranarr potion (unf)", names = { "Ranarr potion (unf)" }, count = 14 },
+                { label = "Ranarr potion (unfinished)", names = { "Ranarr potion (unfinished)" }, count = 14 },
                 { label = "Snape grass", names = { "Snape grass" }, count = 14 },
             },
         },
@@ -185,7 +185,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Kwuarm potion (unf)", names = { "Kwuarm potion (unf)" }, count = 14 },
+                { label = "Kwuarm potion (unfinished)", names = { "Kwuarm potion (unfinished)" }, count = 14 },
                 { label = "Limpwurt root", names = { "Limpwurt root" }, count = 14 },
             },
         },
@@ -195,7 +195,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Snapdragon potion (unf)", names = { "Snapdragon potion (unf)" }, count = 14 },
+                { label = "Snapdragon potion (unfinished)", names = { "Snapdragon potion (unfinished)" }, count = 14 },
                 { label = "Red spiders' eggs", names = { "Red spiders' eggs" }, count = 14 },
             },
         },
@@ -205,7 +205,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Dwarf weed potion (unf)", names = { "Dwarf weed potion (unf)" }, count = 14 },
+                { label = "Dwarf weed potion (unfinished)", names = { "Dwarf weed potion (unfinished)" }, count = 14 },
                 { label = "Wine of Zamorak", names = { "Wine of Zamorak" }, count = 14 },
             },
         },
@@ -215,7 +215,7 @@ return {
                 { label = "Botanist's outfit", contains = { "botanist's mask", "botanist's top", "botanist's trousers", "botanist's gloves", "botanist's boots" } },
             },
             carry = {
-                { label = "Toadflax potion (unf)", names = { "Toadflax potion (unf)" }, count = 14 },
+                { label = "Toadflax potion (unfinished)", names = { "Toadflax potion (unfinished)" }, count = 14 },
                 { label = "Crushed nest", names = { "Crushed nest" }, count = 14 },
             },
         },

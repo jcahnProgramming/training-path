@@ -37,7 +37,7 @@ return {
                         quests = { "Druidic Ritual" },
                     },
                     items = {
-                        { label = "Guam potion (unf)", names = { "Guam potion (unf)" } },
+                        { label = "Guam potion (unfinished)", names = { "Guam potion (unfinished)" } },
                         { label = "Eye of newt", names = { "Eye of newt" } },
                     },
                 },
@@ -55,7 +55,7 @@ return {
                     notes = "40 XP each. 144 potions take you from 12 to 26.",
                     wiki = "https://runescape.wiki/w/Strength_potion",
                     items = {
-                        { label = "Tarromin potion (unf)", names = { "Tarromin potion (unf)" } },
+                        { label = "Tarromin potion (unfinished)", names = { "Tarromin potion (unfinished)" } },
                         { label = "Limpwurt root", names = { "Limpwurt root" } },
                     },
                 },
@@ -73,7 +73,7 @@ return {
                     notes = "67.5 XP each. 322 potions take you from 26 to 38.",
                     wiki = "https://runescape.wiki/w/Energy_potion",
                     items = {
-                        { label = "Harralander potion (unf)", names = { "Harralander potion (unf)" } },
+                        { label = "Harralander potion (unfinished)", names = { "Harralander potion (unfinished)" } },
                         { label = "Chocolate dust", names = { "Chocolate dust" } },
                     },
                 },
@@ -91,7 +91,7 @@ return {
                     notes = "87.5 XP each. 1,557 potions take you from 38 to 55.",
                     wiki = "https://runescape.wiki/w/Prayer_potion",
                     items = {
-                        { label = "Ranarr potion (unf)", names = { "Ranarr potion (unf)" } },
+                        { label = "Ranarr potion (unfinished)", names = { "Ranarr potion (unfinished)" } },
                         { label = "Snape grass", names = { "Snape grass" } },
                     },
                 },
@@ -125,7 +125,7 @@ return {
                     notes = "125 XP each. 1,616 potions take you from 55 to 63.",
                     wiki = "https://runescape.wiki/w/Super_strength_potion",
                     items = {
-                        { label = "Kwuarm potion (unf)", names = { "Kwuarm potion (unf)" } },
+                        { label = "Kwuarm potion (unfinished)", names = { "Kwuarm potion (unfinished)" } },
                         { label = "Limpwurt root", names = { "Limpwurt root" } },
                     },
                 },
@@ -143,7 +143,7 @@ return {
                     notes = "142.5 XP each. 3,724 potions take you from 63 to 72.",
                     wiki = "https://runescape.wiki/w/Super_restore_potion",
                     items = {
-                        { label = "Snapdragon potion (unf)", names = { "Snapdragon potion (unf)" } },
+                        { label = "Snapdragon potion (unfinished)", names = { "Snapdragon potion (unfinished)" } },
                         { label = "Red spiders' eggs", names = { "Red spiders' eggs" } },
                     },
                 },
@@ -161,7 +161,7 @@ return {
                     notes = "162.5 XP each. 7,961 potions take you from 72 to 81.",
                     wiki = "https://runescape.wiki/w/Super_ranging_potion",
                     items = {
-                        { label = "Dwarf weed potion (unf)", names = { "Dwarf weed potion (unf)" } },
+                        { label = "Dwarf weed potion (unfinished)", names = { "Dwarf weed potion (unfinished)" } },
                         { label = "Wine of Zamorak", names = { "Wine of Zamorak" } },
                     },
                 },
@@ -179,7 +179,7 @@ return {
                     notes = "180 XP each.",
                     wiki = "https://runescape.wiki/w/Saradomin_brew",
                     items = {
-                        { label = "Toadflax potion (unf)", names = { "Toadflax potion (unf)" } },
+                        { label = "Toadflax potion (unfinished)", names = { "Toadflax potion (unfinished)" } },
                         { label = "Crushed nest", names = { "Crushed nest" } },
                     },
                 },

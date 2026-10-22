@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.16
+
+- Item names checked against the game's own item list (all 648 exact names in guides, gear, inventories and activities). The 13 that didn't exist are fixed: unfinished potions are "... potion (unfinished)" and unstrung bows "... (unstrung)" in-game. These lines now turn green when you have the item.
+- New ItemIndex.search() (find in-game item names containing some text), used for that check.
+
 ## 0.1.15
 
 - Training queue:

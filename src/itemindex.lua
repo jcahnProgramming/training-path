@@ -32,6 +32,18 @@ function ItemIndex.find(name)
     return byName[string.lower(name)]
 end
 
+-- Every indexed name containing some text (lowercase), sorted, up to
+-- `limit`. Used to find an item's exact in-game name.
+function ItemIndex.search(text, limit)
+    local found = {}
+    for name in pairs(byName) do
+        if string.find(name, string.lower(text), 1, true) then found[#found + 1] = name end
+    end
+    table.sort(found)
+    while #found > (limit or 20) do table.remove(found) end
+    return found
+end
+
 -- Look at the next batch of ids. Returns true when everything is indexed.
 local function indexSome()
     for _ = 1, IDS_PER_TICK do

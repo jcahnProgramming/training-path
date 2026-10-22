@@ -42,7 +42,7 @@ return {
             checklist = {
                 levels = { { skill = "Fletching", level = 25 } },
                 items = {
-                    { label = "Willow longbow (u)", names = { "Willow longbow (u)" }, count = 14 },
+                    { label = "Willow longbow (unstrung)", names = { "Willow longbow (unstrung)" }, count = 14 },
                     { label = "Bowstrings", names = { "Bowstring" }, count = 14 },
                 },
             },

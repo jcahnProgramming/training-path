@@ -1,5 +1,5 @@
 --[[
-    Training Path  -  v0.1.15
+    Training Path  -  v0.1.16
     -----------------------------------
     A movable, resizable window with skill training guides.
 
@@ -272,4 +272,4 @@ function PluginShutdown()
     grip:Destroy()
 end
 
-print("[Training Path] Loaded v0.1.15. Window " .. window.root.width .. " x " .. window.root.height)
+print("[Training Path] Loaded v0.1.16. Window " .. window.root.width .. " x " .. window.root.height)

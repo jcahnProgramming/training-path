@@ -55,7 +55,7 @@ return {
                     wiki = "https://runescape.wiki/w/Willow_longbow",
                     requirements = { levels = { { skill = "Fletching", level = 25 } } },
                     items = {
-                        { label = "Willow longbow (u)", names = { "Willow longbow (u)" } },
+                        { label = "Willow longbow (unstrung)", names = { "Willow longbow (unstrung)" } },
                         { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },
@@ -68,7 +68,7 @@ return {
                     wiki = "https://runescape.wiki/w/Maple_shortbow",
                     requirements = { levels = { { skill = "Fletching", level = 50 } } },
                     items = {
-                        { label = "Maple shortbow (u)", names = { "Maple shortbow (u)" } },
+                        { label = "Maple shortbow (unstrung)", names = { "Maple shortbow (unstrung)" } },
                         { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },
@@ -117,7 +117,7 @@ return {
                     wiki = "https://runescape.wiki/w/Maple_longbow",
                     requirements = { levels = { { skill = "Fletching", level = 55 } } },
                     items = {
-                        { label = "Maple longbow (u)", names = { "Maple longbow (u)" } },
+                        { label = "Maple longbow (unstrung)", names = { "Maple longbow (unstrung)" } },
                         { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },
@@ -161,7 +161,7 @@ return {
                     wiki = "https://runescape.wiki/w/Yew_longbow",
                     requirements = { levels = { { skill = "Fletching", level = 75 } } },
                     items = {
-                        { label = "Yew longbow (u)", names = { "Yew longbow (u)" } },
+                        { label = "Yew longbow (unstrung)", names = { "Yew longbow (unstrung)" } },
                         { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },
@@ -207,7 +207,7 @@ return {
                     wiki = "https://runescape.wiki/w/Magic_longbow",
                     requirements = { levels = { { skill = "Fletching", level = 85 } } },
                     items = {
-                        { label = "Magic longbow (u)", names = { "Magic longbow (u)" } },
+                        { label = "Magic longbow (unstrung)", names = { "Magic longbow (unstrung)" } },
                         { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },

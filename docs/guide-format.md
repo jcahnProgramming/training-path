@@ -58,6 +58,8 @@ and turns the line green when a match is found (`count` defaults to 1).
 - `names`: exact in-game display names (case-insensitive), any one of them matches.
 - `contains`: lowercase text that must appear in the name, e.g. `"pickaxe"` matches "Rune pickaxe".
   Use this for "any X" (any pickaxe, any hatchet). Avoid words that match unrelated items.
+- In-game names (checked against the game's item list): unfinished potions are "Guam potion (unfinished)",
+  unstrung bows are "Magic longbow (unstrung)"; bolts keep "(unf)", e.g. "Rune bolts (unf)".
 - `toolBelt = true`: the item can be kept on the tool belt (hatchets, pickaxes, hammers...). The plugin
   can't see the tool belt, so if it's not carried the line shows grey "(or on your tool belt)", not red.
 - List only items the player must actually wear or carry. Bank/metal bank/tool belt contents can't be

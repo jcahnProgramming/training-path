@@ -198,35 +198,35 @@ return {
         fletching_willow_longbow_string = {
             notes = "Use a bank preset to swap in 14 unstrung bows and 14 bowstrings in one click.",
             carry = {
-                { label = "Willow longbow (u)", names = { "Willow longbow (u)" }, count = 14 },
+                { label = "Willow longbow (unstrung)", names = { "Willow longbow (unstrung)" }, count = 14 },
                 { label = "Bowstrings", names = { "Bowstring" }, count = 14 },
             },
         },
         fletching_maple_shortbow_string = {
             notes = "Use a bank preset to swap in 14 unstrung bows and 14 bowstrings in one click.",
             carry = {
-                { label = "Maple shortbow (u)", names = { "Maple shortbow (u)" }, count = 14 },
+                { label = "Maple shortbow (unstrung)", names = { "Maple shortbow (unstrung)" }, count = 14 },
                 { label = "Bowstrings", names = { "Bowstring" }, count = 14 },
             },
         },
         fletching_maple_longbow_string = {
             notes = "Use a bank preset to swap in 14 unstrung bows and 14 bowstrings in one click.",
             carry = {
-                { label = "Maple longbow (u)", names = { "Maple longbow (u)" }, count = 14 },
+                { label = "Maple longbow (unstrung)", names = { "Maple longbow (unstrung)" }, count = 14 },
                 { label = "Bowstrings", names = { "Bowstring" }, count = 14 },
             },
         },
         fletching_yew_longbow_string = {
             notes = "Use a bank preset to swap in 14 unstrung bows and 14 bowstrings in one click.",
             carry = {
-                { label = "Yew longbow (u)", names = { "Yew longbow (u)" }, count = 14 },
+                { label = "Yew longbow (unstrung)", names = { "Yew longbow (unstrung)" }, count = 14 },
                 { label = "Bowstrings", names = { "Bowstring" }, count = 14 },
             },
         },
         fletching_magic_longbow_string = {
             notes = "Use a bank preset to swap in 14 unstrung bows and 14 bowstrings in one click.",
             carry = {
-                { label = "Magic longbow (u)", names = { "Magic longbow (u)" }, count = 14 },
+                { label = "Magic longbow (unstrung)", names = { "Magic longbow (unstrung)" }, count = 14 },
                 { label = "Bowstrings", names = { "Bowstring" }, count = 14 },
             },
         },
