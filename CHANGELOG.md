@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.6
+
+- First activity: "Orikalkum with strong smithing urns" (Fort Forinthry), opened from the Smithing guide.
+- Setup checklist, live from the backpack: Smithing level, urns ready/filling, urns needing a fire rune, full urns to teleport. Metal bank is shown as a manual check (not visible to plugins).
+- Urns recognised by internal item names (URNS_SMITHING4_*), checked in-game.
+- docs/api-notes.md: item lookup, urn item names, metal bank visibility.
+
 ## 0.1.5
 
 - Guide engine: data format in src/guides/ (level bands -> methods with intensity, XP/hr, location, items, requirements, money, notes; plus boosts and a source credit).

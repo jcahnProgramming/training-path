@@ -33,6 +33,17 @@ as installed on 2026-10-21). "Seen in" names the plugin that demonstrates it.
 - Vars: `var.VarPlayer[name].value`; `Event.VarTransmit` (`e.var.configName`, `e.oldValue`, `e.newValue`).
 - Player name: `PlayerList.Self().displayName`. Game state: `Event.GameStateChanged`, `GameState.GAME`.
 
+## Items (tested in-game 2026-10-22)
+- Any item can be looked up without owning it: `config.Obj.FromID(id)` or `config.Obj.INTERNAL_NAME`
+  -> `.name`, `.configName`, `.id`. Worked: `ORIKALKUM_BAR` (44838), `HAMMER` (2347).
+  `FIRE_RUNE` is NOT the internal name of fire runes (unknown yet).
+- InvSlot only has `.obj` and `.count`: item charges/ObjVars (e.g. urn fill) are NOT exposed.
+- Smithing urns, internal names `URNS_SMITHING<tier>_<STATE>`; tier 2 fragile, 3 plain, 4 strong.
+  States: UNFIRED, NORUNE ("(no rune)"), RUNE ("(empty)", ready to fill), STARTED (filling), FULL.
+  Strong: 20289 unfired, 20290 no rune, 20292 empty, 20293 filling, 20294 full. CERT_ = noted.
+- `config.Inv.METAL_BANK` exists, but `Inventory.Find` gave isValid = false on a level-1 beta
+  account. Unknown whether it's ever sent to the client.
+
 ## Events and timing
 - `Event.X.Subscribe("unique-id", fn)` / `Event.X.Unsubscribe("unique-id")`.
 - `Event.Logic`: 50 per second, `e.logicTick`. `Event.ServerLogic`: once per 0.6 s game tick.

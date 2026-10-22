@@ -19,6 +19,8 @@
                            "low"    AFK
               xpPerHour  = number, or nil if the wiki doesn't give one
               location, items, requirements, money, notes = short text (optional)
+              activity   = id of an activity in src/activities/ (optional);
+                           adds an "Open activity" button
       boosts  = list of short text lines about XP boosts for this skill
 ]]
 
@@ -79,6 +81,15 @@ return {
                     items = "Highest-tier armour you can smith, bought from the GE",
                     money = "Very expensive",
                     notes = "Fastest method. Adamant 85.7k XP/hr, rune 168k, orikalkum 210k.",
+                },
+                {
+                    name = "Orikalkum with strong smithing urns",
+                    intensity = "medium",
+                    location = "Fort Forinthry",
+                    requirements = "Smithing 60; Crafting 49 to add fire runes to urns",
+                    items = "Orikalkum bars in your metal bank, strong smithing urns",
+                    notes = "Each full urn gives 1,450.8 bonus Smithing XP when teleported.",
+                    activity = "urn_smithing",
                 },
                 {
                     name = "Forging from bars",

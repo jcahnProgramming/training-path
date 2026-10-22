@@ -4,6 +4,7 @@
     What's inside the window. The window shows one page at a time:
       - Home:  buttons for each skill guide, then the player's levels.
       - Guide: one skill's guide, with the player's current band marked.
+      - Activity: help for one activity (setup checklist for now).
 
     Each page is a PrettyUI SimpleView (a scrollable area) that fills the
     window. Switching pages destroys the old view and builds a new one.
@@ -12,18 +13,32 @@
 
 local Skills = require("src/skills")
 local Guides = require("src/guides/index")
+local Activities = require("src/activities/index")
 
 local Pages = {}
 
 -- Text colours, as 0xRRGGBBAA (the format PrettyUI uses).
 local GOLD = 0xF2C66DFF
 local GREY = 0x9A9A9AFF
+local GREEN = 0x7CD67CFF
+local RED = 0xE06C6CFF
+local AMBER = 0xE8B04BFF
+
+-- How each checklist state is shown: a marker and a colour.
+local CHECK_STYLE = {
+    ok   = { mark = "[OK]", colour = GREEN },
+    todo = { mark = "[  ]", colour = RED },
+    warn = { mark = "[!]",  colour = AMBER },
+    info = { mark = "[?]",  colour = GREY },
+}
 
 -- Which page is showing, and the things we need to update it each tick.
 local window = nil          -- the PrettyUI window, set by Pages.start
 local view = nil            -- the SimpleView for the current page
-local currentPage = "home"  -- "home" or "guide"
-local currentSkill = nil    -- skill name, when on a guide page
+local currentPage = "home"  -- "home", "guide" or "activity"
+local currentSkill = nil    -- skill name, when on a guide or activity page
+local currentActivity = nil -- activity id, when on an activity page
+local shownChecklist = nil  -- activity page: checklist text it was built with
 local shownLevel = nil      -- level the guide page was built for
 local statusText = nil      -- home page: line at the top
 local skillLines = {}       -- home page: one text per skill
@@ -115,6 +130,12 @@ local function addMethod(method)
     if method.items then view:AddText("Bring: " .. method.items) end
     if method.money then view:AddText("Money: " .. method.money) end
     if method.notes then view:AddText(method.notes) end
+
+    if method.activity and Activities.byId[method.activity] then
+        view:AddSimpleButton("Open activity", function()
+            Pages.showActivity(method.activity)
+        end)
+    end
 end
 
 function Pages.showGuide(skillName)
@@ -163,6 +184,43 @@ function Pages.showGuide(skillName)
 end
 
 ----------------------------------------------------------------------------
+-- Activity page
+----------------------------------------------------------------------------
+
+-- Turn a checklist into one string, so we can tell when anything changed.
+local function checklistSignature(lines)
+    local parts = {}
+    for _, line in ipairs(lines) do parts[#parts + 1] = line.state .. line.text end
+    return table.concat(parts, "|")
+end
+
+function Pages.showActivity(activityId)
+    local activity = Activities.byId[activityId]
+    if activity == nil then return Pages.showHome() end
+
+    newView()
+    currentPage = "activity"
+    currentActivity = activityId
+    currentSkill = activity.skill
+
+    view:AddSimpleButton("< Back to " .. activity.skill .. " guide", function()
+        Pages.showGuide(activity.skill)
+    end)
+    view:AddTitle(activity.title)
+    view:AddText({ text = "Where: " .. activity.location, colour = GOLD })
+    view:AddText(activity.intro)
+
+    view:AddTitle("Setup checklist")
+    local lines = activity.checklist()
+    shownChecklist = checklistSignature(lines)
+    for _, line in ipairs(lines) do
+        local style = CHECK_STYLE[line.state] or CHECK_STYLE.info
+        view:AddText({ text = style.mark .. " " .. line.text, colour = style.colour })
+    end
+    view:AddText({ text = "Updates by itself as your backpack changes.", colour = GREY })
+end
+
+----------------------------------------------------------------------------
 -- Called from main.lua
 ----------------------------------------------------------------------------
 
@@ -176,6 +234,8 @@ end
 function Pages.rebuild()
     if currentPage == "guide" then
         Pages.showGuide(currentSkill)
+    elseif currentPage == "activity" then
+        Pages.showActivity(currentActivity)
     else
         Pages.showHome()
     end
@@ -189,6 +249,12 @@ function Pages.refresh()
         -- Only rebuild the guide if the player's level in it changed.
         local level = Skills.read(findSkill(currentSkill))
         if level ~= shownLevel then Pages.showGuide(currentSkill) end
+    elseif currentPage == "activity" then
+        -- Only rebuild if the checklist would read differently now.
+        local lines = Activities.byId[currentActivity].checklist()
+        if checklistSignature(lines) ~= shownChecklist then
+            Pages.showActivity(currentActivity)
+        end
     end
 end
 
