@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.14
+
+- Settings > Accessibility:
+  - Text size: Small / Normal / Large (body and title fonts; uses the first size the game has, so a missing font can't break anything).
+  - Colours: Standard / High contrast / Colour-blind (blue for done, orange for missing, Okabe-Ito colours).
+  - Text shadow: On / Off.
+  - Status labels: Symbols ([OK], [  ]) or Words (Done:, Missing:, Note:, Check:).
+- All window text goes through the new src/style.lua (one wrapper when each page is created). Button labels keep PrettyUI's own font.
+
 ## 0.1.13
 
 - Navigation redesign:

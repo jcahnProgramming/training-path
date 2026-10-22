@@ -35,6 +35,7 @@ local Gear = require("src/gear/index")
 local Icons = require("src/icons")
 local ItemIndex = require("src/itemindex")
 local Settings = require("src/settings")
+local Style = require("src/style")
 local GameTime = require("src/gametime")
 local Calendar = require("src/calendar")
 
@@ -60,12 +61,13 @@ local GREEN = 0x7CD67CFF
 local RED   = 0xE06C6CFF
 local AMBER = 0xE8B04BFF
 
--- How each check state is shown: a marker and a colour.
+-- The colour for each check state. The marker in front ("[OK]" or
+-- "Done:") comes from Style.mark, which follows the Status labels setting.
 local CHECK_STYLE = {
-    ok   = { mark = "[OK]", colour = GREEN },
-    todo = { mark = "[  ]", colour = RED },
-    warn = { mark = "[!]",  colour = AMBER },
-    info = { mark = "[?]",  colour = GREY },
+    ok   = { colour = GREEN },
+    todo = { colour = RED },
+    warn = { colour = AMBER },
+    info = { colour = GREY },
 }
 
 -- Intensity badges on method cards: short word and colour.
@@ -115,7 +117,7 @@ local PAGES = {}             -- name -> { build = fn, signature = fn }, below
 -- Add a checklist-style line: "[OK] Smithing 60" in green, etc.
 local function addCheckLine(line)
     local style = CHECK_STYLE[line.state] or CHECK_STYLE.info
-    view:AddText({ text = style.mark .. " " .. line.text, colour = style.colour })
+    view:AddText({ text = Style.mark(line.state) .. " " .. line.text, colour = style.colour })
 end
 
 -- Width for a button so that `columns` of them fit side by side.
@@ -263,6 +265,11 @@ local function newView()
         width = 0, height = 0,
         widthAnchor = 1.0, heightAnchor = 1.0,   -- 100% of the window
     })
+    -- Accessibility: every text and title on this page gets the player's
+    -- text size, colour scheme and shadow setting (src/style.lua).
+    local addText, addTitle = view.AddText, view.AddTitle
+    view.AddText = function(self, value) return addText(self, Style.text(value, false)) end
+    view.AddTitle = function(self, value) return addTitle(self, Style.text(value, true)) end
 end
 
 -- Row 1, on every page: where you can go.
@@ -699,9 +706,47 @@ PAGES.settings = {
         })
         view:AddText({ text = "Used for the hover text on the Skills screen: the best method for your "
             .. "level of this kind.", colour = GREY })
+
+        view:AddTitle("Accessibility")
+
+        view:AddText({ text = "Text size", colour = GOLD })
+        addChoice("textSize", {
+            { label = "Small", value = "small" },
+            { label = "Normal", value = "normal" },
+            { label = "Large", value = "large" },
+        })
+
+        view:AddText({ text = "Colours", colour = GOLD })
+        addChoice("colours", {
+            { label = "Standard", value = "standard" },
+            { label = "High contrast", value = "contrast" },
+            { label = "Colour-blind", value = "colourblind" },
+        })
+        view:AddText({ text = "Colour-blind uses blue for done and orange for missing, instead of "
+            .. "green and red.", colour = GREY })
+
+        view:AddText({ text = "Text shadow", colour = GOLD })
+        addChoice("textShadow", {
+            { label = "On", value = "on" },
+            { label = "Off", value = "off" },
+        })
+
+        view:AddText({ text = "Status labels", colour = GOLD })
+        addChoice("statusLabels", {
+            { label = "Symbols", value = "symbols" },
+            { label = "Words", value = "words" },
+        })
+        view:AddText({ text = "Example: " .. Style.mark("ok") .. " Smithing 60   "
+            .. Style.mark("todo") .. " Hammer", colour = GREEN })
+
+        view:AddText({ text = "Button labels keep the game's own font size.", colour = GREY })
     end,
     signature = function()
-        return Settings.get("skillsView") .. Settings.get("bestIntensity")
+        local parts = {}
+        for _, name in ipairs({ "skillsView", "bestIntensity", "textSize", "colours", "textShadow", "statusLabels" }) do
+            parts[#parts + 1] = tostring(Settings.get(name))
+        end
+        return table.concat(parts, ",")
     end,
 }
 

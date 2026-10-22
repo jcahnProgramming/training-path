@@ -7,6 +7,8 @@
                       Skills tab)
       bestIntensity   which kind of method counts as "best" in the compact
                       view's hover text: "high", "medium" or "low" (AFK)
+      textSize, colours, textShadow, statusLabels
+                      accessibility choices, applied by src/style.lua
 ]]
 
 local Settings = {}
@@ -16,6 +18,11 @@ local DB_KEY = "settings"
 local DEFAULTS = {
     skillsView = "grid",
     bestIntensity = "medium",
+    -- Accessibility (see src/style.lua)
+    textSize = "normal",      -- "small", "normal", "large"
+    colours = "standard",     -- "standard", "contrast", "colourblind"
+    textShadow = "on",        -- "on", "off"
+    statusLabels = "symbols", -- "symbols" ([OK] / [  ]) or "words" (Done: / Missing:)
 }
 
 local saved = PersistentDB:GetStructuredData(DB_KEY) or {}
