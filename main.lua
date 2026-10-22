@@ -1,5 +1,5 @@
 --[[
-    Training Path  -  v0.1.19
+    Training Path  -  v1.0.0
     -----------------------------------
     A movable, resizable window with skill training guides.
 
@@ -90,6 +90,9 @@ end
 
 local startX, startY, startW, startH = loadSavedWindow()
 
+-- Defined further down; declared here so the window's close handler can use it.
+local showReopenButton
+
 local window = prettyui.Window.new(gameLayer, {
     title = "Training Path",
     x = startX,
@@ -100,11 +103,10 @@ local window = prettyui.Window.new(gameLayer, {
     minHeight = MIN_HEIGHT,
     maxWidth = MAX_WIDTH,
     maxHeight = MAX_HEIGHT,
-    -- Closing just hides the window for now. A ribbon button to reopen it
-    -- comes later; until then, reload the plugin to bring it back.
-    onClose = function()
-        print("[Training Path] Window closed. Run 'prl training-path' to reopen it.")
-    end,
+    -- Closing only hides the window and leaves a small "Training Path"
+    -- button in its place to bring it back (see "Reopen button" below).
+    -- The plugin ribbon icon can reopen it too.
+    onClose = function() showReopenButton() end,
 })
 
 ----------------------------------------------------------------------------
@@ -159,8 +161,6 @@ local function saveWindowIfChanged()
     end
     lastSaved = { x = root.x, y = root.y, w = root.width, h = root.height }
     PersistentDB:SetStructuredData(DB_KEY_WINDOW, lastSaved)
-    print("[Training Path] Saved window: " .. lastSaved.x .. "," .. lastSaved.y
-        .. "  " .. lastSaved.w .. " x " .. lastSaved.h)
 end
 
 -- PrettyUI calls this whenever the window finishes moving, is shown, or
@@ -259,6 +259,76 @@ grip:Subscribe(ui.Hook.ONRELEASE, "trainingPathResizeStop", stopResize)
 grip:Subscribe(ui.Hook.ONDRAGCOMPLETE, "trainingPathResizeStop", stopResize)
 
 ----------------------------------------------------------------------------
+-- Reopen button
+----------------------------------------------------------------------------
+-- When the window is closed, a small button appears where the window's
+-- title bar was. Clicking it opens the window again. This always works,
+-- even where the plugin ribbon icon isn't available.
+
+local reopenButton = nil
+
+local function hideReopenButton()
+    if reopenButton then reopenButton:Destroy() end
+    reopenButton = nil
+end
+
+showReopenButton = function()
+    hideReopenButton()
+    reopenButton = prettyui.SimpleButton.new(gameLayer, "Training Path", function()
+        hideReopenButton()
+        window:Show()
+    end, { x = window.root.x, y = window.root.y, tooltip = "Open the Training Path window" })
+    reopenButton.root:MoveToFront()
+end
+
+----------------------------------------------------------------------------
+-- Ribbon and settings icons
+----------------------------------------------------------------------------
+-- plugin.json turns on "hasRibbonIcon" and "hasSettingsIcon". When the
+-- player clicks one, the game gives us an empty panel (event.component) to
+-- fill, the same way Quest Helper and Entity Hider do it. We put a few
+-- buttons there that open the window on the right page.
+
+local ribbonView, settingsView = nil, nil
+
+-- Show the window (if it was closed) and switch it to a tab.
+local function openWindowAt(tabName)
+    hideReopenButton()
+    window:Show()
+    Pages.switchTab(tabName)
+end
+
+-- A panel with a title, a line of text and one button per action.
+local function buildPanel(parent, title, text, actions)
+    local panel = prettyui.SimpleView.new(parent, { width = parent.width, height = parent.height })
+    panel:AddTitle(title)
+    panel:AddText(text)
+    for _, action in ipairs(actions) do
+        panel:AddSimpleButton(action[1], action[2])
+    end
+    return panel
+end
+
+Event.ContentLayerReady.Subscribe("trainingPathRibbon", function(event)
+    if ribbonView then ribbonView:Destroy() end
+    ribbonView = buildPanel(event.component, "Training Path",
+        "Training guides, gear and activity help for every skill.", {
+            { "Open Training Path", function() openWindowAt("skills") end },
+            { "Today's events and resets", function() openWindowAt("now") end },
+            { "My queue", function() openWindowAt("queue") end },
+            { "Favourites", function() openWindowAt("favourites") end },
+        })
+end)
+
+Event.SettingsLayerReady.Subscribe("trainingPathSettings", function(event)
+    if settingsView then settingsView:Destroy() end
+    settingsView = buildPanel(event.component, "Training Path settings",
+        "Text size, colours, the skills screen and more are in the window's Settings tab.", {
+            { "Open settings", function() openWindowAt("settings") end },
+        })
+end)
+
+----------------------------------------------------------------------------
 -- Clean up when the plugin is reloaded or disabled
 ----------------------------------------------------------------------------
 
@@ -267,9 +337,14 @@ grip:Subscribe(ui.Hook.ONDRAGCOMPLETE, "trainingPathResizeStop", stopResize)
 -- The window goes first because it still refers to the corner layer.
 function PluginShutdown()
     Event.ServerLogic.Unsubscribe("trainingPathRefreshLevels")
+    Event.ContentLayerReady.Unsubscribe("trainingPathRibbon")
+    Event.SettingsLayerReady.Unsubscribe("trainingPathSettings")
+    if ribbonView then ribbonView:Destroy() end
+    if settingsView then settingsView:Destroy() end
+    hideReopenButton()
     Pages.stop()
     window:Destroy()
     grip:Destroy()
 end
 
-print("[Training Path] Loaded v0.1.19. Window " .. window.root.width .. " x " .. window.root.height)
+print("[Training Path] Loaded v1.0.0. Window " .. window.root.width .. " x " .. window.root.height)

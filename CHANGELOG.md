@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.0
+
+First release for mod.io.
+- Ribbon icon: a panel with Open Training Path, Today's events and resets, My queue and Favourites (each reopens the window if it was closed). Settings icon: Open settings.
+- plugin.json: version 1.0.0, author PathPlays, contact email, hasRibbonIcon, hasSettingsIcon, repo link.
+- README.md for players; docs/modio-description.md with the listing text and Jagex's required sections (Email, EULA, Permissions: none, Data Protection case 1).
+- tools/package.sh builds dist/training-path-<version>.zip with main.lua and plugin.json at the top.
+- Removed the "Saved window" console message.
+- Fixed: "Missing: Missing: ..." when status labels are set to Words.
+- Fixed: in a narrow window the Settings cog covered the Favourites star; it now sits after the star when there's no room on the right.
+- Fixed: Settings choice buttons wrap to a new line instead of being cut off in a narrow window.
+- Closing the window leaves a small "Training Path" button in its place that reopens it (works even where the ribbon icon isn't shown).
+- The top nav row wraps onto a second line in a narrow window, so the star and cog are never cut off.
+- Long item names beside icons and long page titles beside the skill icon wrap to two lines instead of being cut off.
+
 ## 0.1.19
 
 Data accuracy pass: flagged doubts re-checked against the current RuneScape Wiki (2026-10-22).

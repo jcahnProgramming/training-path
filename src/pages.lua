@@ -161,7 +161,12 @@ local PAGES = {}             -- name -> { build = fn, signature = fn }, below
 -- Add a checklist-style line: "[OK] Smithing 60" in green, etc.
 local function addCheckLine(line)
     local style = CHECK_STYLE[line.state] or CHECK_STYLE.info
-    view:AddText({ text = Style.mark(line.state) .. " " .. line.text, colour = style.colour })
+    local mark = Style.mark(line.state)
+    -- With word labels the mark can repeat the text's own first word
+    -- ("Missing: Missing: ..."); then show the text alone.
+    local text = line.text
+    if text:sub(1, #mark) ~= mark then text = mark .. " " .. text end
+    view:AddText({ text = text, colour = style.colour })
 end
 
 -- Width for a button so that `columns` of them fit side by side.
@@ -260,7 +265,9 @@ local function addItemLine(item, line)
         quantity = (item.count and item.count > 1) and item.count or nil,
         tooltip = item.label,
     })
-    view:AddText({ text = line.text, colour = style.colour, inline = true, offsetY = 8 })
+    -- Up to two lines beside the 40-wide slot, so long names wrap.
+    view:AddText({ text = line.text, colour = style.colour, inline = true, offsetY = 0,
+        width = columnWidth(1) - 40 - COLUMN_GAP, height = 40, maxLines = 2 })
 end
 
 -- The best method for a skill at the player's level, preferring the
@@ -331,20 +338,31 @@ local ICON_BUTTON = 24   -- PrettyUI's icon button size
 
 local function addTabs()
     local activeTab = history[1] and history[1].name or current.name
+    local rowWidth = columnWidth(1)
+    local used = 0
 
-    for i, tab in ipairs(NAV_TABS) do
-        local button = view:AddSimpleButton(tab.label, function() Pages.switchTab(tab.name) end,
-            { inline = i > 1, tooltip = tab.tooltip })
-        if activeTab == tab.name then button:SetActive(true) end
+    -- Add one nav button; it goes on a new line if this one is full.
+    local function navButton(content, onPress, tooltip, isActive)
+        local width = prettyui.SimpleButton.getSize(content)
+        local fits = used > 0 and (used + COLUMN_GAP + width) <= rowWidth
+        local button = view:AddSimpleButton(content, onPress, { inline = fits, tooltip = tooltip })
+        used = fits and (used + COLUMN_GAP + width) or width
+        if isActive then button:SetActive(true) end
     end
-    local star = view:AddSimpleButton(STAR_SPRITE, function() Pages.switchTab("favourites") end,
-        { inline = true, tooltip = "Favourites" })
-    if activeTab == "favourites" then star:SetActive(true) end
 
-    -- Settings, pinned to the right edge of the same row.
-    local rightEdge = PAGE_PADDING + columnWidth(1) - ICON_BUTTON
+    for _, tab in ipairs(NAV_TABS) do
+        navButton(tab.label, function() Pages.switchTab(tab.name) end, tab.tooltip, activeTab == tab.name)
+    end
+    navButton(STAR_SPRITE, function() Pages.switchTab("favourites") end, "Favourites",
+        activeTab == "favourites")
+
+    -- Settings: pinned to the right edge of the current line when there's
+    -- room, otherwise it simply follows on.
+    local rightEdge = PAGE_PADDING + rowWidth - ICON_BUTTON
+    local pinned = (PAGE_PADDING + used + COLUMN_GAP) <= rightEdge
     local cog = view:AddSimpleButton(SETTINGS_SPRITE, function() Pages.switchTab("settings") end,
-        { inline = true, x = rightEdge, tooltip = "Settings" })
+        { inline = pinned or (used + COLUMN_GAP + ICON_BUTTON) <= rowWidth,
+          x = pinned and rightEdge or nil, tooltip = "Settings" })
     if activeTab == "settings" then cog:SetActive(true) end
 end
 
@@ -1007,13 +1025,19 @@ PAGES.queue = {
 -- Settings tab
 ----------------------------------------------------------------------------
 
--- A row of choice buttons; the chosen one is highlighted.
+-- A row of choice buttons; the chosen one is highlighted. If the window is
+-- too narrow for all of them, they continue on the next line.
 local function addChoice(settingName, choices)
+    local rowWidth = columnWidth(1)
+    local used = 0
     for i, choice in ipairs(choices) do
+        local width = prettyui.SimpleButton.getSize(choice.label)
+        local fits = i > 1 and (used + COLUMN_GAP + width) <= rowWidth
         local button = view:AddSimpleButton(choice.label, function()
             Settings.set(settingName, choice.value)
             Pages.redraw()
-        end, { inline = i > 1 })
+        end, { inline = fits })
+        used = fits and (used + COLUMN_GAP + width) or width
         if Settings.get(settingName) == choice.value then button:SetActive(true) end
     end
 end
@@ -1284,7 +1308,8 @@ PAGES.method = {
         addBackRow("Home > " .. guide.skill .. " > " .. method.name)
 
         addSkillIcon(guide.skill, 40, false)
-        view:AddTitle({ text = method.name, inline = true, offsetY = 6 })
+        view:AddTitle({ text = method.name, inline = true, offsetY = 0,
+            width = columnWidth(1) - 40 - COLUMN_GAP, height = 40, maxLines = 2 })
         local badge = INTENSITY_BADGE[method.intensity]
         if badge then view:AddText({ text = badge.text, colour = badge.colour }) end
         local starred = Favourites.has(method.id)
@@ -1503,7 +1528,8 @@ PAGES.activity = {
         if not keepScroll or session == nil then startTracking(activity) end
 
         addSkillIcon(activity.skill, 40, false)
-        view:AddTitle({ text = activity.title, inline = true, offsetY = 6 })
+        view:AddTitle({ text = activity.title, inline = true, offsetY = 0,
+            width = columnWidth(1) - 40 - COLUMN_GAP, height = 40, maxLines = 2 })
         if activity.intro then view:AddText(activity.intro) end
         if activity.repeats then
             view:AddText({ text = "Repeats: " .. activity.repeats

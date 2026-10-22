@@ -1,8 +1,12 @@
 {
     "name": "Training Path",
-    "version": "0.1.19",
-    "contactEmailAddress": "REPLACE_WITH_YOUR_PLUGIN_CONTACT_EMAIL",
+    "version": "1.0.0",
+    "author": "PathPlays",
+    "contactEmailAddress": "jamie@meownetstudios.com",
     "requiredDependencies": {
         "prettyui": 6398181
-    }
+    },
+    "hasRibbonIcon": true,
+    "hasSettingsIcon": true,
+    "repo": "https://github.com/jcahnProgramming/training-path"
 }
