@@ -37,6 +37,7 @@ local ItemIndex = require("src/itemindex")
 local Settings = require("src/settings")
 local Style = require("src/style")
 local Queue = require("src/queue")
+local DnDProgress = require("src/dndprogress")
 local GameTime = require("src/gametime")
 local Calendar = require("src/calendar")
 
@@ -628,20 +629,49 @@ PAGES.now = {
 
         -- Distractions & Diversions
         view:AddTitle("Distractions & Diversions")
-        view:AddText({ text = "The plugin can't see yet whether you've done these this period, "
-            .. "only when they reset.", colour = GREY })
+        view:AddText({ text = "Press Done when you've done one. It clears itself at that D&D's "
+            .. "reset. The plugin can't see this by itself yet.", colour = GREY })
+        local DONE_WIDTH = 64
         for _, group in ipairs(DND_GROUPS) do
             local inGroup = {}
             for _, entry in ipairs(DnD.list or {}) do
                 if entry.resets == group.resets then inGroup[#inGroup + 1] = entry end
             end
             if #inGroup > 0 then
-                view:AddText({ text = group.title, colour = GOLD })
+                -- "Weekly: 3 of 9 left" (only counting ones you can do).
+                local canDo, left = 0, 0
                 for _, entry in ipairs(inGroup) do
+                    if dndStatus(entry).state == "ok" then
+                        canDo = canDo + 1
+                        if not DnDProgress.isDone(entry) then left = left + 1 end
+                    end
+                end
+                local header = group.title
+                if DnDProgress.canTick(inGroup[1]) then
+                    header = header .. ": " .. left .. " of " .. canDo .. " left"
+                end
+                view:AddText({ text = header, colour = GOLD })
+
+                for _, entry in ipairs(inGroup) do
+                    local tickable = DnDProgress.canTick(entry)
+                    local done = DnDProgress.isDone(entry)
+                    local nameWidth = columnWidth(1) - (tickable and (DONE_WIDTH + COLUMN_GAP) or 0)
                     view:AddSimpleButton(entry.name, function() Pages.open("dnd", entry.id) end,
-                        { width = columnWidth(1) })
-                    view:AddText({ text = dndTiming(entry, resets), colour = WHITE })
-                    addCheckLine(dndStatus(entry))
+                        { width = nameWidth })
+                    if tickable then
+                        local tick = view:AddSimpleButton(done and "Undo" or "Done", function()
+                            DnDProgress.setDone(entry, not done)
+                            Pages.redraw()
+                        end, { inline = true, width = DONE_WIDTH,
+                            tooltip = done and "Mark as not done" or "Mark as done this period" })
+                        if done then tick:SetActive(true) end
+                    end
+                    if done then
+                        addCheckLine({ state = "ok", text = "Done - " .. dndTiming(entry, resets):lower() })
+                    else
+                        view:AddText({ text = dndTiming(entry, resets), colour = WHITE })
+                        addCheckLine(dndStatus(entry))
+                    end
                 end
             end
         end
@@ -652,6 +682,7 @@ PAGES.now = {
         -- calendar finishes loading.
         local now = GameTime.nowMinutes() or 0
         local parts = { tostring(now), tostring(Calendar.isReady()) }
+        for _, entry in ipairs(DnD.list or {}) do parts[#parts + 1] = tostring(DnDProgress.isDone(entry)) end
         for _, skill in ipairs(Skills.list) do parts[#parts + 1] = tostring(Skills.read(skill)) end
         return table.concat(parts, ",")
     end,
@@ -672,6 +703,14 @@ PAGES.dnd = {
         view:AddTitle(entry.name)
         local now = GameTime.now()
         if now then view:AddText({ text = dndTiming(entry, GameTime.untilResets(now)), colour = AMBER }) end
+        if DnDProgress.canTick(entry) then
+            local done = DnDProgress.isDone(entry)
+            if done then addCheckLine({ state = "ok", text = "Done this period" }) end
+            view:AddSimpleButton(done and "Mark as not done" or "Mark as done", function()
+                DnDProgress.setDone(entry, not done)
+                Pages.redraw()
+            end)
+        end
         if entry.resetRule then view:AddText({ text = entry.resetRule, colour = GREY }) end
         if entry.reward then view:AddText("Reward: " .. entry.reward) end
         if entry.skills and #entry.skills > 0 then view:AddText("Skills: " .. table.concat(entry.skills, ", ")) end
@@ -699,8 +738,12 @@ PAGES.dnd = {
         view:AddTitle("More")
         addWikiButton(entry.wiki)
     end,
-    signature = function()
-        return tostring(GameTime.nowMinutes())
+    signature = function(dndId)
+        local done = false
+        for _, entry in ipairs(DnD.list or {}) do
+            if entry.id == dndId then done = DnDProgress.isDone(entry) end
+        end
+        return tostring(GameTime.nowMinutes()) .. tostring(done)
     end,
 }
 

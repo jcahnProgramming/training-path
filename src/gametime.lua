@@ -95,6 +95,22 @@ function GameTime.untilResets(now)
     return { daily = toDaily, weekly = toWeekly, monthly = toMonthly }
 end
 
+-- When the current period started, in clock minutes: today's 00:00 UTC
+-- ("daily"), the last Wednesday 00:00 ("weekly"), or the 1st of this
+-- month 00:00 ("monthly"). nil for any other kind.
+function GameTime.periodStart(now, kind)
+    local todayStart = now.day * MINUTES_PER_DAY
+    if kind == "daily" then return todayStart end
+    if kind == "weekly" then
+        local daysSinceWed = (now.weekday - 3) % 7    -- Wednesday = 3
+        return todayStart - daysSinceWed * MINUTES_PER_DAY
+    end
+    if kind == "monthly" then
+        return daysFromCivil(now.year, now.month, 1) * MINUTES_PER_DAY
+    end
+    return nil
+end
+
 -- 125 -> "2h 5m", 3000 -> "2d 2h".
 function GameTime.formatMinutes(total)
     total = math.max(0, math.floor(total))

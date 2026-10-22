@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.17
+
+- Distractions & Diversions can be ticked off: a Done / Undo button on each daily, weekly and monthly D&D (Now tab and its own page). A tick clears itself at that D&D's reset (00:00 UTC, Wednesday 00:00 UTC, or the 1st).
+- Group headers show what's left, e.g. "Weekly: 3 of 9 left" (counting only D&Ds you meet the requirements for). Done ones show in green.
+- Ticks are saved per character. New src/dndprogress.lua and GameTime.periodStart().
+
 ## 0.1.16
 
 - Item names checked against the game's own item list (all 648 exact names in guides, gear, inventories and activities). The 13 that didn't exist are fixed: unfinished potions are "... potion (unfinished)" and unstrung bows "... (unstrung)" in-game. These lines now turn green when you have the item.
