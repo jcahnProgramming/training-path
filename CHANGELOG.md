@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.13
+
+- Navigation redesign:
+  - Row 1 (every page): Home, Now, Levels and the Favourites star on the left; the Settings cog on its own at the right edge. Each has a hover tooltip. "Skills" is now "Home" (the separate Home button is gone, the tab does the same).
+  - Row 2 (inner pages only): "< Back" with a one-line breadcrumb beside it, e.g. "Home > Smithing > Gear".
+  - Skill pages: a header with the skill icon, name and "Level X of Y", then the Training | Gear buttons under it.
+
 ## 0.1.12
 
 - Activity helpers for every skill (154, plus the urn one): setup checklist (green/red), how to get there, numbered steps, tips, live tracking, "when you're done", and daily/weekly limits. Data in src/activities/<skill>.lua (format: docs/activity-format.md). Method pages have an "Activity helper: ..." button per activity.

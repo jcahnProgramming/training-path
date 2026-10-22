@@ -3,15 +3,18 @@
     ---------
     Everything inside the window. The window shows one page at a time:
 
-      Tabs (always at the top):  [Skills] [Levels] [star = Favourites]
-        skills      grid of skills; click one to open its guide
+      Row 1, always:  [Home] [Now] [Levels] [star = Favourites] ... [cog = Settings]
+        skills      Home: all skills; click one to open its guide
+        now         today's events, resets, Distractions & Diversions
         levels      every skill's level and XP
         favourites  starred methods; click one to go straight to it
-      Pages opened from a tab (with "<lt> Back" and "Home" buttons):
-        guide       one skill's guide: bands and methods, your band marked
-        method      one method in full: requirements and items checked
-                    green/red, wiki link, favourite star, activity button
-        activity    setup checklist and live tracking for an activity
+        settings    skills screen layout, what "best method" means
+      Row 2, on pages opened from a tab:  [< Back]  Home > Smithing > ...
+        guide       a skill's guide: bands and methods (Training | Gear)
+        gear        a skill's gear by level (Training | Gear)
+        method      one method in full: checks, directions, wiki, activity
+        activity    setup, steps, tracking and finishing for an activity
+        dnd         one Distraction & Diversion in detail
 
     How pages work: each page is a PrettyUI SimpleView (a scrollable area)
     that fills the window. Opening a page destroys the old view and builds a
@@ -262,39 +265,52 @@ local function newView()
     })
 end
 
--- The tab row at the top of every page.
+-- Row 1, on every page: where you can go.
+--   [Home] [Now] [Levels] [star]                      [cog]
+-- The main places on the left; Settings on its own at the right edge.
+-- The section you're in is highlighted (inner pages belong to the tab
+-- they were opened from).
+local NAV_TABS = {
+    { name = "skills", label = "Home", tooltip = "All skills" },
+    { name = "now", label = "Now", tooltip = "Today's events, resets and D&Ds" },
+    { name = "levels", label = "Levels", tooltip = "Your levels and XP" },
+}
+local ICON_BUTTON = 24   -- PrettyUI's icon button size
+
 local function addTabs()
-    local tabs = {
-        { name = "skills", label = "Skills" },
-        { name = "levels", label = "Levels" },
-        { name = "now", label = "Now" },
-    }
-    -- Which tab is "home" for the current page (guide pages belong to Skills).
     local activeTab = history[1] and history[1].name or current.name
 
-    for i, tab in ipairs(tabs) do
+    for i, tab in ipairs(NAV_TABS) do
         local button = view:AddSimpleButton(tab.label, function() Pages.switchTab(tab.name) end,
-            { inline = i > 1 })
+            { inline = i > 1, tooltip = tab.tooltip })
         if activeTab == tab.name then button:SetActive(true) end
     end
     local star = view:AddSimpleButton(STAR_SPRITE, function() Pages.switchTab("favourites") end,
         { inline = true, tooltip = "Favourites" })
     if activeTab == "favourites" then star:SetActive(true) end
+
+    -- Settings, pinned to the right edge of the same row.
+    local rightEdge = PAGE_PADDING + columnWidth(1) - ICON_BUTTON
     local cog = view:AddSimpleButton(SETTINGS_SPRITE, function() Pages.switchTab("settings") end,
-        { inline = true, tooltip = "Settings" })
+        { inline = true, x = rightEdge, tooltip = "Settings" })
     if activeTab == "settings" then cog:SetActive(true) end
 end
 
--- The Back and Home buttons and where you are, for pages opened from a tab.
+-- Row 2, only on pages opened from a tab: where you are.
+--   [< Back]  Home > Smithing > Gear
+-- The breadcrumb is kept to one line so it can't run off a narrow window.
+local BACK_WIDTH = 64
 local function addBackRow(breadcrumb)
     if #history == 0 then return end
-    -- The game reads "<" as the start of a text tag (like <col=ff0000>), which
-    -- made a plain "< Back" label disappear. "<lt>" is the game's way of
-    -- writing a literal "<".
-    view:AddSimpleButton("<lt> Back", Pages.back)
-    -- Home: straight back to the Skills tab, however deep you are.
-    view:AddSimpleButton("Home", function() Pages.switchTab("skills") end, { inline = true })
-    if breadcrumb then view:AddText({ text = breadcrumb, colour = GREY }) end
+    -- The game reads "<" as the start of a text tag (like <col=ff0000>), so
+    -- "<lt>" is how a literal "<" is written.
+    view:AddSimpleButton("<lt> Back", Pages.back, { width = BACK_WIDTH, tooltip = "Previous page" })
+    if breadcrumb then
+        view:AddText({
+            text = breadcrumb, colour = GREY, inline = true, offsetY = 0,
+            width = columnWidth(1) - BACK_WIDTH - COLUMN_GAP, height = 24, maxLines = 1,
+        })
+    end
 end
 
 -- Build `current` from scratch. keepScroll = stay at the same scroll
@@ -371,6 +387,21 @@ local function addSkillSubTabs(skillName, active)
         show(false)
     end, { inline = true, disabled = Gear.bySkill[skillName] == nil })
     if active == "guide" then training:SetActive(true) else gear:SetActive(true) end
+end
+
+-- The top of a skill's pages:
+--   [icon] Smithing                 Level 65 of 110
+--   [Training] [Gear]
+local function addSkillHeader(skillName, active)
+    addSkillIcon(skillName, 40, false)
+    view:AddTitle({ text = skillName, inline = true, offsetY = 6 })
+    local level = Skills.read(Skills.find(skillName))
+    local guide = Guides.bySkill[skillName]
+    if level then
+        view:AddText({ text = "Level " .. level .. " of " .. (guide and guide.maxLevel or 99),
+            colour = GOLD, inline = true, offsetY = 10 })
+    end
+    addSkillSubTabs(skillName, active)
 end
 
 -- A list of items (wear/carry), each checked green/red against what the
@@ -743,21 +774,14 @@ PAGES.favourites = {
 PAGES.guide = {
     build = function(skillName, keepScroll)
         local guide = Guides.bySkill[skillName]
-        addBackRow("Skills > " .. skillName)
-        addSkillSubTabs(skillName, "guide")
-        addSkillIcon(skillName, 40, false)
-        view:AddTitle({ text = skillName .. " guide", inline = true, offsetY = 6 })
+        addBackRow("Home > " .. skillName)
+        addSkillHeader(skillName, "guide")
         if guide == nil then
             view:AddText("This guide isn't available yet.")
             return
         end
 
         local level = Skills.read(Skills.find(skillName))
-        if level then
-            view:AddText({ text = "Your level: " .. level .. " of " .. (guide.maxLevel or 99), colour = GOLD })
-        else
-            view:AddText("Log in to see where you are in this guide.")
-        end
 
         view:AddText({ text = "Click a level range to open or close it. HIGH = click-intensive, "
             .. "MED = a click now and then, AFK = idle.", colour = GREY })
@@ -812,10 +836,8 @@ PAGES.guide = {
 PAGES.gear = {
     build = function(skillName, keepScroll)
         local gear = Gear.bySkill[skillName]
-        addBackRow("Skills > " .. skillName .. " > Gear")
-        addSkillSubTabs(skillName, "gear")
-        addSkillIcon(skillName, 40, false)
-        view:AddTitle({ text = skillName .. " gear", inline = true, offsetY = 6 })
+        addBackRow("Home > " .. skillName .. " > Gear")
+        addSkillHeader(skillName, "gear")
         if gear == nil then
             view:AddText("Gear for this skill isn't available yet.")
             return
@@ -882,7 +904,7 @@ PAGES.method = {
             return
         end
         local method, guide = entry.method, entry.guide
-        addBackRow(guide.skill .. " > " .. "Levels " .. entry.band.from .. " to " .. (entry.band.to - 1))
+        addBackRow("Home > " .. guide.skill .. " > " .. method.name)
 
         addSkillIcon(guide.skill, 40, false)
         view:AddTitle({ text = method.name, inline = true, offsetY = 6 })
@@ -1061,7 +1083,7 @@ PAGES.activity = {
     -- keepScroll is true when the page is only redrawn: tracking carries on.
     build = function(activityId, keepScroll)
         local activity = Activities.byId[activityId]
-        addBackRow(activity and (activity.skill .. " > Activity") or nil)
+        addBackRow(activity and ("Home > " .. activity.skill .. " > " .. activity.title) or nil)
         if activity == nil then
             view:AddText("This activity isn't available.")
             return
