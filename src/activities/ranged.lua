@@ -14,7 +14,7 @@ return {
             id = "ranged_cows_activity",
             method = "ranged_cows",
             title = "Shooting cows",
-            intro = "Kill cows for 25.5 XP each. Less crowded than chickens, and the hides sell or train Crafting.",
+            intro = "Kill cows for 50 XP each. Less crowded than chickens, and the hides sell or train Crafting.",
             checklist = {
                 other = { "A bow and arrows (or another ranged weapon) equipped" },
             },
@@ -25,7 +25,7 @@ return {
                 "Pick up more ammo or restock before you run out.",
             },
             tips = {
-                "Cow calves give a little less XP (24.5).",
+                "Cow calves give half the XP (25).",
                 "XP per kill is low, so it needs constant attention.",
             },
             finish = { "At 20 Ranged, move on to chaos druids, giant bats or hill giants in Taverley Dungeon." },
@@ -44,7 +44,7 @@ return {
             steps = {
                 "Equip your bow and arrows.",
                 "Attack a druid. Others are aggressive and will come to you.",
-                "Keep killing; each kill gives 66 XP or more.",
+                "Keep killing; each kill gives 57.5 XP.",
                 "Pick up the herbs they drop, and bank when your backpack is full.",
             },
             tips = {

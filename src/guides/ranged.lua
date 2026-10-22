@@ -3,8 +3,8 @@
     Source: RuneScape Wiki, "Pay-to-play Ranged training"
     https://runescape.wiki/w/Pay-to-play_Ranged_training
     Licensed CC BY-NC-SA 3.0. Format: docs/guide-format.md.
-    XP per kill figures are the ones the wiki lists for each monster; the wiki
-    notes the page still needs updating for the 2023 combat XP changes.
+    That page still needs updating for the 2023 combat XP changes, so XP per
+    kill figures were re-checked on each monster's own wiki page (2026-10-22).
 ]]
 
 return {
@@ -23,7 +23,7 @@ return {
                     intensity = "high",
                     location = "Beefy Bill's field, Lumbridge",
                     money = "Cowhides to sell or craft",
-                    notes = "25.5 XP per kill. Less crowded than chickens; Beefy Bill banks for a 10% fee.",
+                    notes = "50 XP per kill. Less crowded than chickens; Beefy Bill banks for a 10% fee.",
                     wiki = "https://runescape.wiki/w/Cow",
                 },
                 {
@@ -31,7 +31,7 @@ return {
                     name = "Cockroach drones",
                     intensity = "high",
                     location = "Stronghold of Player Safety",
-                    notes = "25.5 XP per kill. Close to a bank, many spawns, drops herbs and runes.",
+                    notes = "60 XP per kill. Close to a bank, many spawns, drops herbs and runes.",
                     wiki = "https://runescape.wiki/w/Cockroach_drone",
                 },
                 {
@@ -40,7 +40,7 @@ return {
                     intensity = "high",
                     location = "Lumbridge chicken coop",
                     money = "Feathers sell well",
-                    notes = "24.9 XP per kill. Good drops for the level.",
+                    notes = "12.5 XP per kill. Good drops for the level.",
                     wiki = "https://runescape.wiki/w/Chicken",
                 },
             },
@@ -53,7 +53,7 @@ return {
                     name = "Hill Giants",
                     intensity = "medium",
                     location = "Taverley Dungeon",
-                    notes = "264 XP per kill. Use the rocks for cover; they hit hard otherwise.",
+                    notes = "225 XP per kill. Use the rocks for cover; they hit hard otherwise.",
                     wiki = "https://runescape.wiki/w/Hill_Giant",
                 },
                 {
@@ -62,7 +62,7 @@ return {
                     intensity = "low",
                     location = "Taverley Dungeon",
                     money = "Drop herbs often",
-                    notes = "66+ XP per kill. Weak to arrows, aggressive, low max hit.",
+                    notes = "57.5 XP per kill. Weak to arrows, aggressive, low max hit.",
                     wiki = "https://runescape.wiki/w/Chaos_druid",
                 },
                 {
@@ -70,7 +70,7 @@ return {
                     name = "Giant bats",
                     intensity = "low",
                     location = "Taverley Dungeon or Goblin Cave",
-                    notes = "95+ XP per kill. Weak to bolts and aggressive.",
+                    notes = "50 XP per kill (regular giant bats). Aggressive.",
                     wiki = "https://runescape.wiki/w/Giant_bat",
                 },
             },
@@ -83,7 +83,7 @@ return {
                     name = "Infernal mages",
                     intensity = "medium",
                     location = "Slayer Tower",
-                    notes = "267 XP per kill. Weak to arrows, very low max hit, quick respawn.",
+                    notes = "325 XP per kill. Weak to arrows, very low max hit, quick respawn.",
                     wiki = "https://runescape.wiki/w/Infernal_mage",
                     requirements = {
                         levels = { { skill = "Slayer", level = 45 } },
@@ -107,7 +107,7 @@ return {
                     intensity = "medium",
                     location = "Chaos Tunnels or Wilderness",
                     money = "Very good drops",
-                    notes = "198 XP per kill. Weak to bolts. Dragonfire is deadly without protection.",
+                    notes = "225 XP per kill. Weak to bolts. Dragonfire is deadly without protection.",
                     crossovers = "Dragon bones for Prayer",
                     wiki = "https://runescape.wiki/w/Green_dragon",
                     items = {
@@ -149,7 +149,7 @@ return {
                     intensity = "medium",
                     location = "Taverley Dungeon or Chaos Tunnels",
                     money = "Good alchables and charms",
-                    notes = "661 XP per kill. Weak to bolts. A dwarf multicannon works in Taverley.",
+                    notes = "450 XP per kill. Weak to bolts. A dwarf multicannon works in Taverley.",
                     wiki = "https://runescape.wiki/w/Black_demon",
                 },
             },
@@ -162,7 +162,7 @@ return {
                     name = "Mature grotworms",
                     intensity = "medium",
                     location = "Grotworm Lair",
-                    notes = "661 XP per kill. Bring alchemy runes and prayer potions.",
+                    notes = "640 XP per kill. Bring alchemy runes and prayer potions.",
                     wiki = "https://runescape.wiki/w/Mature_grotworm",
                 },
                 {
@@ -170,7 +170,7 @@ return {
                     name = "Aviansies",
                     intensity = "medium",
                     location = "God Wars Dungeon",
-                    notes = "491.8 XP per kill. Wear an item from all four factions to avoid aggression.",
+                    notes = "320 to 340 XP per kill. Wear an item from all four factions to avoid aggression.",
                     wiki = "https://runescape.wiki/w/Aviansie",
                     requirements = {
                         quests = { "Death Plateau", "Troll Stronghold" },
@@ -247,7 +247,7 @@ return {
                     name = "Kree'arra and guards",
                     intensity = "high",
                     location = "God Wars Dungeon",
-                    notes = "6,573 XP per kill. Use an instance on fast spawn.",
+                    notes = "3,750 XP per kill. Use an instance on fast spawn.",
                     wiki = "https://runescape.wiki/w/Kree%27arra",
                     requirements = {
                         levels = { { skill = "Ranged", level = 70 } },

@@ -52,7 +52,7 @@ return {
                 "Bank the cut sapphires and repeat.",
             },
             tips = {
-                "A portable crafter gives +10% base XP and a 5% chance to save a gem.",
+                "A portable crafter gives +10% base XP and a 5% chance to save a gem, until portables are removed on 23 Nov 2026.",
                 "Uncut sapphires have a high GE buy limit (10,000 every four hours).",
                 "Opal, jade and red topaz can break when cut; sapphire and up are the recommended gems.",
             },
@@ -149,16 +149,16 @@ return {
                 other = { "The gem for your urn type, e.g. jade for mining urns" },
             },
             steps = {
-                "Use soft porcelain clay at a potter's wheel or portable crafter.",
+                "Use soft porcelain clay at a potter's wheel.",
                 "Choose the exquisite urn type from the drop-down menu in the top left.",
-                "Fire the unfired urns at a pottery oven or portable crafter.",
+                "Fire the unfired urns at a pottery oven, or cast Fire Urn.",
                 "Add the cut gem to the (no gem) urns.",
                 "Bank and repeat. Sell the (no rune) urns or keep them.",
             },
             tips = {
                 "Mining urn steps: 78 XP to form, 120 to fire, 120 to add the gem.",
                 "Skipping the gem step is faster per urn but gives less XP.",
-                "A portable crafter gives +10% base XP and works as wheel and oven.",
+                "Portable crafters (+10% base XP, wheel and oven in one) are removed on 23 Nov 2026.",
             },
             finish = { "Higher urns follow: cooking at 103, up to farming urns at 110." },
         },

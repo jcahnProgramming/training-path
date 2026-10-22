@@ -34,8 +34,8 @@ return {
                     intensity = "high",
                     xpPerHour = 34800,
                     location = "Player-owned house workbench",
-                    money = "About 178k coins for 1-33",
-                    notes = "Crude chair, bookcase, round and long tables: 34.8k-136.8k XP/hr.",
+                    money = "634 planks and about 634 steel nails for 3-33",
+                    notes = "Crude chair, bookcase, round and long tables: 34.8k-136.8k XP/hr (600 builds/hr, no speed bonus).",
                     wiki = "https://runescape.wiki/w/Furniture_workbench",
                     requirements = {
                         quests = { "There's No Place Like Home..." },
@@ -69,7 +69,7 @@ return {
                     intensity = "high",
                     xpPerHour = 288000,
                     location = "Player-owned house workbench",
-                    money = "About 1.4M coins for 33-56",
+                    money = "2,768 oak planks for 33-56",
                     notes = "480 XP each, 8 oak planks per larder.",
                     wiki = "https://runescape.wiki/w/Oak_larder",
                     requirements = {
@@ -119,7 +119,7 @@ return {
                     intensity = "high",
                     xpPerHour = 432000,
                     location = "Player-owned house workbench",
-                    money = "About 3.3M coins for 56-72",
+                    money = "7,952 teak planks for 56-72",
                     notes = "720 XP each, 8 teak planks per table.",
                     wiki = "https://runescape.wiki/w/Teak_long_table",
                     requirements = {
@@ -154,7 +154,7 @@ return {
                     intensity = "high",
                     xpPerHour = 672000,
                     location = "Player-owned house workbench",
-                    money = "About 11.9M coins for 72-80",
+                    money = "7,760 mahogany planks for 72-80",
                     notes = "1,120 XP each, 8 mahogany planks per table.",
                     wiki = "https://runescape.wiki/w/Mahogany_long_table",
                     requirements = {
@@ -222,6 +222,7 @@ return {
                     xpPerHour = 432000,
                     location = "Player-owned house workbench",
                     money = "Cheaper than cauldrons",
+                    notes = "Wiki's cheaper route: teak 80-99 (built 50% faster from 80), then mahogany long tables 99-106.",
                     wiki = "https://runescape.wiki/w/Teak_long_table",
                     items = {
                         { label = "Teak planks", names = { "Teak plank" }, count = 8 },
@@ -248,9 +249,8 @@ return {
                     id = "construction_contracts_eternal",
                     name = "Construction contracts (eternal)",
                     intensity = "medium",
-                    xpPerHour = 1560000,
                     location = "Any estate agent",
-                    notes = "Eternal planks from 100. About 54,000 XP per contract.",
+                    notes = "Eternal planks from 100. The wiki's eternal plank XP figures are marked out of date.",
                     wiki = "https://runescape.wiki/w/Construction_contracts",
                     items = {
                         { label = "Eternal planks", names = { "Eternal plank" } },
@@ -305,7 +305,6 @@ return {
                     id = "construction_contracts_eternal_106",
                     name = "Construction contracts (eternal)",
                     intensity = "medium",
-                    xpPerHour = 1560000,
                     location = "Any estate agent",
                     wiki = "https://runescape.wiki/w/Construction_contracts",
                     items = {
@@ -335,7 +334,6 @@ return {
                     id = "construction_contracts_eternal_110",
                     name = "Construction contracts (eternal)",
                     intensity = "medium",
-                    xpPerHour = 1560000,
                     location = "Any estate agent",
                     wiki = "https://runescape.wiki/w/Construction_contracts",
                     items = {

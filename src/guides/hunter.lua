@@ -4,7 +4,9 @@
     https://runescape.wiki/w/Pay-to-play_Hunter_training
     Licensed CC BY-NC-SA 3.0. Numbers copied from the wiki on 2026-10-22;
     values the wiki doesn't state are left out. The wiki notes early-level
-    rates may be out of date after the 2026 early-game rebalance.
+    rates may be out of date after the 2026 early-game rebalance, so
+    XP/hr is left out for snared birds and whirligigs (the rebalance
+    changed their XP per catch and cut whirligig rates by about half).
     Format: docs/guide-format.md
 ]]
 
@@ -22,9 +24,8 @@ return {
                     id = "hunter_crimson_swift",
                     name = "Crimson swifts",
                     intensity = "medium",
-                    xpPerHour = 6000,
                     location = "Taverley, north of the Druids",
-                    notes = "The Varrock Museum natural history quiz takes you from 1 to 9.",
+                    notes = "22 XP per catch. The Varrock Museum natural history quiz takes you from 1 to 9.",
                     wiki = "https://runescape.wiki/w/Crimson_swift",
                     items = {
                         { label = "Bird snare", names = { "Bird snare" } },
@@ -39,7 +40,6 @@ return {
                     id = "hunter_cerulean_twitch",
                     name = "Cerulean twitches",
                     intensity = "medium",
-                    xpPerHour = 23000,
                     location = "Rellekka Hunter area (fairy ring DKS)",
                     notes = "61 XP per catch.",
                     wiki = "https://runescape.wiki/w/Cerulean_twitch",
@@ -51,9 +51,8 @@ return {
                     id = "hunter_plain_whirligig",
                     name = "Plain whirligigs",
                     intensity = "high",
-                    xpPerHour = 12000,
                     location = "Het's Oasis",
-                    notes = "From level 16.",
+                    notes = "From level 16. 20 XP per catch.",
                     wiki = "https://runescape.wiki/w/Het%27s_Oasis",
                     requirements = {
                         levels = { { skill = "Hunter", level = 16 } },
@@ -68,9 +67,8 @@ return {
                     id = "hunter_tropical_wagtail",
                     name = "Tropical wagtails",
                     intensity = "medium",
-                    xpPerHour = 40000,
                     location = "Feldip Hunter area, north of the Monastery of Ascension",
-                    notes = "2 snares at 19, 3 at 30. Jungle camo top and legs raise success.",
+                    notes = "100 XP per catch. 2 snares at 19, 3 at 30. Jungle camo top and legs raise success.",
                     wiki = "https://runescape.wiki/w/Tropical_wagtail",
                     items = {
                         { label = "Bird snares", names = { "Bird snare" }, count = 2 },
@@ -85,19 +83,17 @@ return {
                     id = "hunter_gliding_whirligig",
                     name = "Gliding whirligigs",
                     intensity = "high",
-                    xpPerHour = 50000,
                     location = "Het's Oasis",
-                    money = "Roses cost about 829 each, 100-200 per hour",
-                    notes = "50k to 75k XP/hr. Put roses in flower baskets (5 teak planks, 10 steel nails).",
+                    money = "Uses 100-200 roses per hour",
+                    notes = "100 XP per catch. Put roses in flower baskets (5 teak planks, 10 steel nails).",
                     wiki = "https://runescape.wiki/w/Gliding_whirligig",
                 },
                 {
                     id = "hunter_tropical_wagtail_30",
                     name = "Tropical wagtails",
                     intensity = "medium",
-                    xpPerHour = 55000,
                     location = "Feldip Hunter area",
-                    notes = "55k to 66k XP/hr with three snares at 30.",
+                    notes = "100 XP per catch, three snares from 30.",
                     wiki = "https://runescape.wiki/w/Tropical_wagtail",
                     items = {
                         { label = "Bird snares", names = { "Bird snare" }, count = 3 },
@@ -112,18 +108,17 @@ return {
                     id = "hunter_swift_whirligig",
                     name = "Swift whirligigs",
                     intensity = "high",
-                    xpPerHour = 60000,
                     location = "Het's Oasis",
-                    money = "Irises cost about 15 each",
-                    notes = "Uses irises in flower baskets. Rates rise as you stack catches.",
+                    money = "Uses 100-200 irises per hour",
+                    notes = "180 XP per catch. Uses irises in flower baskets. Stacked catches give 25% XP.",
                     wiki = "https://runescape.wiki/w/Swift_whirligig",
                 },
                 {
                     id = "hunter_viridian_skillchompa",
                     name = "Viridian skillchompas",
                     intensity = "medium",
-                    xpPerHour = 40000,
-                    notes = "From level 53. 40k to 50k XP/hr.",
+                    xpPerHour = 50000,
+                    notes = "From level 53. 50k to 72k XP/hr with 3 box traps, 60k to 82k with 4 from 60.",
                     wiki = "https://runescape.wiki/w/Viridian_skillchompa",
                     requirements = {
                         levels = { { skill = "Hunter", level = 53 } },
@@ -140,7 +135,7 @@ return {
                     intensity = "medium",
                     xpPerHour = 72000,
                     location = "Ourania Hunter area",
-                    notes = "3 net traps at 59, 4 at 60. Ourania Cave bank costs 20 runes.",
+                    notes = "224 XP per catch. 3 net traps at 59, 4 at 60. Ourania Cave bank costs 20 runes.",
                     wiki = "https://runescape.wiki/w/Red_salamander",
                     items = {
                         { label = "Small fishing nets", names = { "Small fishing net" }, count = 3 },
@@ -151,7 +146,6 @@ return {
                     id = "hunter_swift_whirligig_59",
                     name = "Swift whirligigs",
                     intensity = "high",
-                    xpPerHour = 60000,
                     location = "Het's Oasis",
                     wiki = "https://runescape.wiki/w/Swift_whirligig",
                 },
@@ -196,10 +190,9 @@ return {
                     id = "hunter_hasty_whirligig",
                     name = "Hasty whirligigs",
                     intensity = "high",
-                    xpPerHour = 125000,
                     location = "Het's Oasis",
-                    money = "Hydrangeas cost about 639 each",
-                    notes = "About 125k XP/hr, up to 200k with Dundee's upgrades and Het's statue.",
+                    money = "Uses 100-200 hydrangeas per hour",
+                    notes = "300 XP per catch. Dundee's upgrades (+5% XP) and Het's statue (+10%) add more.",
                     wiki = "https://runescape.wiki/w/Hasty_whirligig",
                 },
                 {
@@ -253,7 +246,6 @@ return {
                     id = "hunter_hasty_whirligig_80",
                     name = "Hasty whirligigs",
                     intensity = "high",
-                    xpPerHour = 125000,
                     location = "Het's Oasis",
                     wiki = "https://runescape.wiki/w/Hasty_whirligig",
                 },
@@ -296,9 +288,8 @@ return {
                     id = "hunter_speedy_whirligig",
                     name = "Speedy whirligigs",
                     intensity = "high",
-                    xpPerHour = 224000,
                     location = "Het's Oasis",
-                    notes = "From level 90. Hollyhocks in flower boxes. Very click-intensive.",
+                    notes = "From level 90. 500 XP per catch. Hollyhocks in flower baskets. Very click-intensive.",
                     wiki = "https://runescape.wiki/w/Speedy_whirligig",
                     requirements = {
                         levels = { { skill = "Hunter", level = 90 } },

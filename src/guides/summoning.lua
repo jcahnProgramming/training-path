@@ -55,7 +55,7 @@ return {
                     name = "Granite crab pouches",
                     intensity = "high",
                     location = "Any Summoning obelisk",
-                    notes = "Gold charms. About 375 pouches for 16-28; save gold charms at 28-33.",
+                    notes = "Gold charms. About 375 pouches for 16-28; save gold charms from 28 to 52.",
                     wiki = "https://runescape.wiki/w/Granite_crab_pouch",
                     items = {
                         { label = "Gold charms", names = { "Gold charm" } },
@@ -86,10 +86,10 @@ return {
                     name = "Beaver, macaw, then magpie pouches",
                     intensity = "high",
                     location = "Any Summoning obelisk",
-                    notes = "Gold charms. Beaver 33-41, macaw 41-47, magpie 47-52.",
+                    notes = "Green charms. Beaver 33-41, macaw (or spirit cockatrice from 43) 41-47, magpie 47-56.",
                     wiki = "https://runescape.wiki/w/Magpie_pouch",
                     items = {
-                        { label = "Gold charms", names = { "Gold charm" } },
+                        { label = "Green charms", names = { "Green charm" } },
                         { label = "Spirit shards", names = { "Spirit shards" } },
                         { label = "Pouches", names = { "Pouch" } },
                     },
@@ -99,9 +99,10 @@ return {
                     name = "Vampyre bat, pyrelord, then bloated leech",
                     intensity = "high",
                     location = "Any Summoning obelisk",
-                    notes = "Vampyre bat or honey badger 33-46, pyrelord 46-49, bloated leech from 49.",
+                    notes = "Crimson charms. Vampyre bat or honey badger 33-46, pyrelord 46-49, bloated leech from 49.",
                     wiki = "https://runescape.wiki/w/Bloated_leech_pouch",
                     items = {
+                        { label = "Crimson charms", names = { "Crimson charm" } },
                         { label = "Spirit shards", names = { "Spirit shards" } },
                         { label = "Pouches", names = { "Pouch" } },
                     },

@@ -185,7 +185,7 @@ return {
                     xpPerHour = 207000,
                     location = "Uncharted Isles (from The Arc)",
                     money = "Sea salt sales cover the supplies",
-                    notes = "About 35 minutes per colony per day. Needs voyage supplies from Rosie.",
+                    notes = "About 35 minutes and 90k XP per colony per day. The Alaea crablet page gives about 240k XP/hr at 99.",
                     wiki = "https://runescape.wiki/w/Pay-to-play_Mining_training#Alaea_crablets",
                     requirements = {
                         levels = { { skill = "Mining", level = 97 } },

@@ -143,8 +143,8 @@ return {
         {
             id = "invention_ancient_gizmos_activity",
             method = "invention_ancient_gizmos",
-            title = "Ancient gizmos with timeworn components",
-            intro = "Make ancient gizmos filled with timeworn components. By far the fastest Invention XP, and very expensive.",
+            title = "Ancient weapon gizmos with timeworn components",
+            intro = "Make ancient weapon gizmos filled with timeworn components. By far the fastest Invention XP, and very expensive.",
             checklist = {
                 levels = { { skill = "Invention", level = 86 } },
                 other = {

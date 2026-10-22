@@ -47,7 +47,7 @@ return {
                     names = { "Portable fletcher" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84 (Grand Exchange or Fort Forinthry).",
-                    notes = "+10% XP and 10% chance to save materials.",
+                    notes = "+10% XP and 10% chance to save materials. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_fletcher",
                 },
             },
@@ -70,7 +70,7 @@ return {
                     names = { "Portable fletcher" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84.",
-                    notes = "Also strings two bows at once 10% of the time.",
+                    notes = "Also strings two bows at once 10% of the time. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_fletcher",
                 },
                 {
@@ -111,6 +111,7 @@ return {
                     names = { "Portable fletcher" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84.",
+                    notes = "Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_fletcher",
                 },
                 {
@@ -169,6 +170,7 @@ return {
                     names = { "Portable fletcher" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84.",
+                    notes = "Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_fletcher",
                 },
                 {

@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.19
+
+Data accuracy pass: flagged doubts re-checked against the current RuneScape Wiki (2026-10-22).
+- Ranged: XP per kill re-checked on every monster page (many were from before the 2023 combat XP changes, e.g. cows 50 not 25.5, Kree'arra 3,750 not 6,573). Bow levels confirm the July 2026 rebalance (maple 40, acadia 50, yew 70, magic 80, elder 90).
+- Magic: quest/spellbook requirements added for Watchtower Teleport, Hunter Kit, Superglass Make and String Jewellery.
+- Melee gear: halberd shops need Regicide started; adamant halberd source fixed; Vestments of havoc source fixed; Essence of Finality needs 99 Crafting; steel arrows Fletching 20.
+- Prayer: chaos altar uses the February 2026 rule (1.5x, +0.5x per Wilderness task tier); XP/hr marked as "for dragon bones"; First age outfit cost fixed.
+- Necromancy: Rune Mythos / level 24 requirements; tier III glyph inventory uses a supreme or elder overload.
+- Summoning: charm colours fixed (beaver, macaw, magpie use green; vampyre bat, pyrelord, bloated leech crimson).
+- Construction: checked against the July 2026 housing rework; GE price snapshots replaced with plank counts; obsolete eternal-plank contract numbers removed.
+- Invention: "Creating ancient weapon gizmos" (the wiki recommends weapon shells); stale prices removed.
+- Hunter: rates invalidated by the 2026 rebalance replaced with XP per catch; red salamander 224 XP.
+- Fletching: rebuilt for the 2026 rebalance (new bands and levels, yew shortbow method added); shafts accept both "Shaft"/"Arrow shaft" and "Headless shaft"/"Headless arrow".
+- Cooking: portables are removed from the game on 23 Nov 2026 (announced), so methods point to the Fort Forinthry kitchen.
+- Crafting: platinum jewellery in its own 104+ band.
+
 ## 0.1.18
 
 - Regions: a new section on the Now tab with 17 regions (Menaphos, Prifddinas, Fort Forinthry, Player-owned port, The Arc, Anachronia, Morytania, Het's Oasis, Havenhythe, Daemonheim, Wilderness, Kharidian Desert, Heart of Gielinor, Mazcab, Miscellania, City of Um, Zanaris) and 40 repeatable or capped activities, researched from the wiki after the March 2026 DailyScape Overhaul.

@@ -1,8 +1,9 @@
 --[[
     Fletching activities (data only, no code).
-    Sources: RuneScape Wiki, "Pay-to-play Fletching training", "Headless arrow",
+    Sources: RuneScape Wiki, "Pay-to-play Fletching training", "Headless shaft",
     "Willow longbow", "Broad arrows", "Dream of Iaia",
-    "'Accidental' Fletching and Firemaking" (Zygomite Carestyling), "Rune dart".
+    "'Accidental' Fletching and Firemaking" (Zygomite Carestyling), "Rune dart",
+    "2026 mid-game rebalance".
     Licensed CC BY-NC-SA 3.0. Format: docs/activity-format.md
 ]]
 
@@ -18,7 +19,7 @@ return {
             intro = "Attach feathers to shafts to make headless shafts. 15 XP per set of 15, fast and usually profitable at low levels.",
             checklist = {
                 items = {
-                    { label = "Shafts", names = { "Arrow shaft", "Shaft" } },
+                    { label = "Shafts", names = { "Shaft", "Arrow shaft" } },
                     { label = "Feathers", names = { "Feather" } },
                 },
             },
@@ -32,13 +33,13 @@ return {
                 "Each action attaches 15 feathers to 15 shafts.",
                 "Keep the headless shafts to make arrows later, or sell them.",
             },
-            finish = { "At 25 to 40, move on to stringing willow bows." },
+            finish = { "At 25, move on to stringing willow longbows." },
         },
         {
             id = "fletching_willow_longbow_string_activity",
             method = "fletching_willow_longbow_string",
             title = "Stringing willow longbows",
-            intro = "String unstrung willow longbows with bowstrings. Stringing a backpack of 14 bows takes about 15 seconds and is profitable.",
+            intro = "String unstrung willow longbows with bowstrings for 25 XP each. Stringing a backpack of 14 bows takes about 15 seconds.",
             checklist = {
                 levels = { { skill = "Fletching", level = 25 } },
                 items = {
@@ -54,10 +55,10 @@ return {
             },
             tips = {
                 "Fletching the unstrung bow from logs gives the same XP as stringing it.",
-                "A portable fletcher can string two bows at once (10% chance).",
+                "A portable fletcher can string two bows at once (10% chance) until portables are removed on 23 Nov 2026.",
                 "Bank presets make the bank trips much faster.",
             },
-            finish = { "Move up to maple shortbows at 50 and maple longbows at 55." },
+            finish = { "Move up to maple shortbows at 40 and maple longbows at 45." },
         },
         {
             id = "fletching_broad_arrows_activity",
@@ -69,7 +70,7 @@ return {
                 quests = { "Smoking Kills" },
                 items = {
                     { label = "Broad arrowheads", names = { "Broad arrowheads" } },
-                    { label = "Headless shafts", names = { "Headless arrow", "Headless shaft" } },
+                    { label = "Headless shafts", names = { "Headless shaft", "Headless arrow" } },
                 },
                 other = { "Broad arrow fletching unlocked (300 Slayer points)" },
             },
@@ -83,7 +84,7 @@ return {
                 "Broad arrows are untradeable: keep them or disassemble them with Invention.",
                 "Making one is needed for a hard Desert achievement.",
             },
-            finish = { "At 75, rune arrows; at 81, rune darts are faster." },
+            finish = { "Rune arrows (50) are a cheaper option; at 81, rune darts are faster." },
         },
         {
             id = "fletching_dream_of_iaia_activity",
@@ -142,7 +143,7 @@ return {
             id = "fletching_rune_darts_activity",
             method = "fletching_rune_darts",
             title = "Making rune darts",
-            intro = "Add feathers to rune dart tips. 188 XP per set of 10 and about 1,034,000 base XP per hour. Fast but expensive.",
+            intro = "Add feathers to rune dart tips. 188 XP per set of 10 and over 1,000,000 base XP per hour. Fast but expensive.",
             checklist = {
                 levels = { { skill = "Fletching", level = 81 } },
                 items = {

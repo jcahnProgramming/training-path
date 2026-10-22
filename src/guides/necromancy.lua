@@ -52,6 +52,10 @@ return {
                     intensity = "high",
                     notes = "Both needed: Kili Row unlocks gear upgrades, Rune Mythos incantations. 1,500 XP.",
                     wiki = "https://runescape.wiki/w/Rune_Mythos",
+                    requirements = {
+                        levels = { { skill = "Necromancy", level = 24 } },
+                        other = { "Kili Row needs 20 Necromancy, Rune Mythos 24" },
+                    },
                 },
                 {
                     id = "necromancy_ghostly_trolls",
@@ -267,6 +271,7 @@ return {
                     wiki = "https://runescape.wiki/w/Powerful_essence",
                     requirements = {
                         levels = { { skill = "Necromancy", level = 95 } },
+                        quests = { "Rune Mythos" },
                     },
                     items = {
                         { label = "Pure essence", names = { "Pure essence" }, count = 800 },

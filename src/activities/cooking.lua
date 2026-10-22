@@ -1,6 +1,7 @@
 --[[
     Cooking activities (data only, no code).
     Sources: RuneScape Wiki pages "Pay-to-play Cooking training", "Portable range",
+    "Kitchen (Fort Forinthry)", "2026 microtransaction items changes",
     "Jug of wine", "Sweetcorn" and "Cooking gauntlets". CC BY-NC-SA 3.0.
     Format: docs/activity-format.md
 ]]
@@ -23,7 +24,7 @@ return {
             },
             steps = {
                 "Withdraw a backpack of raw food.",
-                "Use the raw food on a range, portable range or bonfire and cook the whole backpack.",
+                "Use the raw food on a range or bonfire and cook the whole backpack.",
                 "Bank the cooked (and burnt) food and withdraw more.",
                 "Repeat until level 15.",
             },
@@ -38,7 +39,7 @@ return {
             id = "cooking_sweetcorn_activity",
             method = "cooking_sweetcorn",
             title = "Cooking sweetcorn",
-            intro = "Cook about 1,000 sweetcorn from 28 to 52, ideally on a portable range for 21% more XP.",
+            intro = "Cook about 1,000 sweetcorn from 28 to 52 for 104 XP each, on a range right next to a bank.",
             checklist = {
                 levels = { { skill = "Cooking", level = 28 } },
                 items = {
@@ -47,15 +48,15 @@ return {
                 },
             },
             steps = {
-                "Find a hosted portable range (often in the Fort Forinthry workshop on world 84), or use a range near a bank.",
+                "Use the range in the Fort Forinthry kitchen, next to its bank chest, or another range near a bank.",
                 "Withdraw a backpack of sweetcorn.",
                 "Use the sweetcorn on the range and cook the whole backpack.",
                 "Bank and repeat.",
             },
             tips = {
                 "Each sweetcorn gives 104 XP. You stop burning it at 53.",
-                "A portable range also gives a 5% chance of an extra portion, sent to your bank, and a 3% lower burn chance.",
-                "The Portables friends chat lists where portable ranges are set up.",
+                "The kitchen gives 3% fewer burns at tier 2 and +5% base XP at tier 3 (85 Construction).",
+                "Portable ranges (+21% XP) are removed from the game on 23 Nov 2026.",
             },
             finish = { "At 52, move on to desert sole." },
         },
@@ -63,7 +64,7 @@ return {
             id = "cooking_wine_activity",
             method = "cooking_wine",
             title = "Making jugs of wine",
-            intro = "Use grapes on jugs of water. It is very fast XP (upwards of 700k an hour) but loses money on every jug.",
+            intro = "Use grapes on jugs of water. It is very fast XP (upwards of 700,000 an hour) but loses money on every jug.",
             checklist = {
                 levels = { { skill = "Cooking", level = 35 } },
                 items = {
@@ -87,7 +88,7 @@ return {
             id = "cooking_desert_sole_activity",
             method = "cooking_desert_sole",
             title = "Cooking desert sole",
-            intro = "Cook desert sole from 52 for 142.5 XP each. On a portable range this is about 241k XP an hour.",
+            intro = "Cook desert sole from 52 for 142.5 XP each, about 200k base XP an hour.",
             checklist = {
                 levels = { { skill = "Cooking", level = 52 } },
                 items = {
@@ -97,7 +98,7 @@ return {
                 other = { "Cooking gauntlets come from the Family Crest quest" },
             },
             steps = {
-                "Find a portable range, or use a range next to a bank such as the Fort Forinthry kitchen.",
+                "Use the Fort Forinthry kitchen range (next to its bank chest), or another range near a bank.",
                 "Withdraw a backpack of raw desert sole.",
                 "Use the sole on the range and cook the whole backpack.",
                 "Bank and repeat.",
@@ -105,7 +106,7 @@ return {
             tips = {
                 "With cooking gauntlets you stop burning desert sole at 81.",
                 "You can fish the sole yourself in the Menaphos Port district for Fishing XP.",
-                "The Dwarven army axe adds 3 XP to each cook on a range or portable range.",
+                "The Dwarven army axe adds 3 XP to each cook on a range or bonfire.",
             },
             finish = { "From 66, ghostly sole is a bit faster. At 80, try beltfish with gauntlets." },
         },
@@ -124,13 +125,13 @@ return {
             },
             steps = {
                 "Wear cooking gauntlets.",
-                "Find a portable range, or use a range next to a bank.",
+                "Use the Fort Forinthry kitchen range, or another range next to a bank.",
                 "Withdraw a backpack of raw sharks, use them on the range and cook them all.",
                 "Bank and repeat.",
             },
             tips = {
                 "At 93 with gauntlets you burn about 1% of sharks; you stop burning them at 94.",
-                "On a portable range this is about 355k XP an hour.",
+                "This is about 294k base XP an hour.",
             },
             finish = { "At 95, blue blubber jellyfish; at 99, sailfish." },
         },

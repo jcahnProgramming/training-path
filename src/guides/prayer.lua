@@ -24,7 +24,7 @@ return {
                     xpPerHour = 1184400,
                     location = "Any bank",
                     money = "Expensive: bones plus 2 powders per hour",
-                    notes = "Fastest method. 3.5x XP for 30 minutes per powder. Hotkey the bones. Ashes are not boosted.",
+                    notes = "Fastest method. 3.5x XP for 30 minutes per powder; ashes are not boosted. XP/hr is the wiki's dragon bones figure.",
                     wiki = "https://runescape.wiki/w/Powder_of_burials",
                     items = {
                         { label = "Powder of burials", names = { "Powder of burials" } },
@@ -38,7 +38,7 @@ return {
                     xpPerHour = 384048,
                     location = "Your house, or a host on world 31",
                     money = "Cost of bones",
-                    notes = "3.5x XP with both burners lit. About 1,524 bones per hour with a pack yak.",
+                    notes = "3.5x XP with both burners lit. About 1,524 bones per hour with a pack yak (XP/hr for dragon bones).",
                     wiki = "https://runescape.wiki/w/Pay-to-play_Prayer_training#Player-owned_house",
                     items = {
                         { label = "Bones or ashes", contains = { "bones", "ashes" } },
@@ -52,7 +52,7 @@ return {
                     xpPerHour = 201600,
                     location = "Port Phasmatys",
                     money = "Cost of bones or ashes",
-                    notes = "4x XP per bone, but slower. Ashes need no grinding.",
+                    notes = "4x XP per bone, but slower (about 700 bones/hr; XP/hr for dragon bones). Ashes need no grinding.",
                     wiki = "https://runescape.wiki/w/Ectofuntus",
                     requirements = {
                         quests = { "Ghosts Ahoy" },
@@ -118,7 +118,7 @@ return {
                     xpPerHour = 478800,
                     location = "Chaos Temple, Wilderness",
                     money = "Cost of bones",
-                    notes = "3.5x XP. Bank with Simon next door. Do not opt into PvP.",
+                    notes = "1.5x XP, +0.5x per Wilderness task tier: 3.5x with elite. XP/hr is dragon bones with elite. Do not opt into PvP.",
                     wiki = "https://runescape.wiki/w/Chaos_altar_(Wilderness)",
                     requirements = {
                         other = { "Elite Wilderness achievements for 3.5x XP" },
@@ -150,7 +150,7 @@ return {
                     xpPerHour = 410400,
                     location = "Fort Forinthry",
                     money = "Cost of bones",
-                    notes = "Up to 3x XP. Prayer brawling gloves work here. Bank chest next door.",
+                    notes = "Up to 3x XP (tier 3 chapel). XP/hr for dragon bones. Prayer brawling gloves work here.",
                     wiki = "https://runescape.wiki/w/Chapel_(Fort_Forinthry)",
                     requirements = {
                         levels = { { skill = "Construction", level = 90 } },

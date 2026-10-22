@@ -48,7 +48,7 @@ return {
                     names = { "Portable crafter" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84 (Lumbridge Market or Fort Forinthry).",
-                    notes = "+10% XP, chance to save hides, clay and gems. Also a wheel, oven and tannery.",
+                    notes = "+10% XP, chance to save hides, clay and gems. Also a wheel, oven and tannery. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_crafter",
                 },
                 {
@@ -80,7 +80,7 @@ return {
                     names = { "Portable crafter" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84.",
-                    notes = "+10% XP, 5% chance to save a gem when cutting.",
+                    notes = "+10% XP, 5% chance to save a gem when cutting. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_crafter",
                 },
                 {
@@ -131,6 +131,7 @@ return {
                     names = { "Portable crafter" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84.",
+                    notes = "Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_crafter",
                 },
                 {
@@ -166,7 +167,7 @@ return {
                     names = { "Brooch of the Gods" },
                     tradeable = true,
                     obtain = "Grand Exchange (expensive). Untradeable once worn.",
-                    notes = "Doubles portable crafter saving: 20% for hides and clay, 10% for gems.",
+                    notes = "Doubles portable crafter saving: 20% for hides and clay, 10% for gems. Only useful until portables are removed on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Brooch_of_the_Gods",
                 },
             },
@@ -208,6 +209,7 @@ return {
                     names = { "Portable crafter" },
                     tradeable = true,
                     obtain = "Grand Exchange, or use one placed by other players on world 84.",
+                    notes = "Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_crafter",
                 },
                 {
@@ -226,7 +228,7 @@ return {
                     names = { "Brooch of the Gods" },
                     tradeable = true,
                     obtain = "Grand Exchange (expensive). Untradeable once worn.",
-                    notes = "Doubles portable crafter saving chances.",
+                    notes = "Doubles portable crafter saving chances. Only useful until portables are removed on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Brooch_of_the_Gods",
                 },
             },

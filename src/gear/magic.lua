@@ -77,7 +77,7 @@ return {
                     names = { "Imphide robe top" },
                     levels = { { skill = "Defence", level = 10 } },
                     tradeable = true,
-                    obtain = "Craft from imphide (10-17 Crafting), shops, or the Grand Exchange.",
+                    obtain = "Craft from imphide (14 Crafting), shops, or the Grand Exchange.",
                     wiki = "https://runescape.wiki/w/Imphide_robe_top",
                 },
                 {
@@ -118,7 +118,7 @@ return {
                     names = { "Spider silk robe top" },
                     levels = { { skill = "Defence", level = 20 } },
                     tradeable = true,
-                    obtain = "Craft from spider silk (20-24 Crafting), shops, or the Grand Exchange.",
+                    obtain = "Craft from spider silk (24 Crafting), shops, or the Grand Exchange.",
                     wiki = "https://runescape.wiki/w/Spider_silk_robe_top",
                 },
                 {

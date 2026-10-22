@@ -3,7 +3,8 @@
     Sources: RuneScape Wiki, "Pay-to-play Hunter training", "Crimson swift",
     "Bird snare", "Tropical wagtail", "Feldip Hunter area", "Net trapping",
     "Ourania Hunter area", "Carnivorous chinchompa", "Box trap",
-    "Scarab catching", "Het's Oasis" and "Hasty whirligig".
+    "Scarab catching", "Het's Oasis", "Hasty whirligig" and
+    "2026 early-game rebalance".
     Licensed CC BY-NC-SA 3.0. Format: docs/activity-format.md
 ]]
 
@@ -40,7 +41,7 @@ return {
             id = "hunter_tropical_wagtail_activity",
             method = "hunter_tropical_wagtail",
             title = "Snaring tropical wagtails",
-            intro = "Catch tropical wagtails with bird snares for 100 XP each. About 40,000 XP an hour with 2 snares, 55,000 to 66,000 with 3 at level 30.",
+            intro = "Catch tropical wagtails with bird snares for 100 XP each, plus bones, raw bird meat and stripy feathers. You can lay 3 snares from level 30.",
             checklist = {
                 levels = { { skill = "Hunter", level = 19 } },
                 items = {
@@ -110,6 +111,7 @@ return {
                 "You can lay 4 box traps at 60 and 5 at 80.",
                 "Bring a few spare box traps in case one is lost.",
                 "Spicy minced meat bait or smoking the traps raises the success rate a little.",
+                "A trap can catch 1 to 6 chinchompas at once; always at least 2 from 77 Agility.",
             },
             finish = { "At 70 hasty whirligigs are faster; at 75 Hunter and 55 Slayer try Big Game Hunter." },
         },
@@ -117,7 +119,7 @@ return {
             id = "hunter_hasty_whirligig_activity",
             method = "hunter_hasty_whirligig",
             title = "Catching hasty whirligigs",
-            intro = "Send the crocodiles at Het's Oasis after hasty whirligigs for 300 XP each. About 125,000 XP an hour, up to 200,000 with all upgrades. Very click-intensive.",
+            intro = "Send the crocodiles at Het's Oasis after hasty whirligigs for 300 XP each. Very click-intensive.",
             checklist = {
                 levels = { { skill = "Hunter", level = 70 } },
                 items = {
@@ -130,13 +132,13 @@ return {
                 "Build both flower baskets at a pond if you have not yet.",
                 "Put hydrangeas in the baskets: each 8 flowers turns one plain whirligig into a hasty one.",
                 "Click a hasty whirligig to send a crocodile after it.",
-                "While the crocodile is out, keep clicking more whirligigs to stack catches (up to 3).",
+                "While the crocodile is out, keep clicking more whirligigs to stack catches (up to 3). Stacked catches give 25% of the XP.",
                 "Pick up the shells the crocodile brings back, and refill the baskets as flowers run out.",
             },
             tips = {
                 "Each basket holds 32 flowers. You use about 100 to 200 an hour.",
                 "Pieces of Het repair Het's statue for +10% whirligig XP.",
-                "Dundee's Crocodile Upgrades: auto-loot at 2,500 catches, stacks of 5 at 3,000.",
+                "Dundee's Crocodile Upgrades: auto-loot at 2,500 catches, stacks of 5 at 3,000, and +5% XP.",
                 "Grind 15 shells into a powder of pulverising.",
             },
             finish = { "At 90 switch to speedy whirligigs with hollyhocks." },

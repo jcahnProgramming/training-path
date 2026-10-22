@@ -3,8 +3,10 @@
     Source: RuneScape Wiki, "Pay-to-play Fletching training"
     https://runescape.wiki/w/Pay-to-play_Fletching_training
     Licensed CC BY-NC-SA 3.0. Format: docs/guide-format.md
-    XP rates are the wiki's base XP/hr. The wiki notes the page may be
-    out of date after the 2026 mid-game rebalance.
+    XP rates are the wiki's base XP/hr. The training page is flagged out of
+    date after the 2026 mid-game rebalance, so levels and XP per item come
+    from the item pages and "2026 mid-game rebalance"; bow XP/hr is left
+    out where the XP per bow changed.
 ]]
 
 return {
@@ -15,43 +17,42 @@ return {
 
     bands = {
         {
-            from = 1, to = 35,
+            from = 1, to = 25,
             methods = {
                 {
                     id = "fletching_headless_shafts",
-                    name = "Headless arrows",
+                    name = "Headless shafts",
                     intensity = "low",
                     xpPerHour = 45000,
                     money = "Profitable",
-                    notes = "Add feathers to arrow shafts. 15 XP each.",
-                    wiki = "https://runescape.wiki/w/Headless_arrow",
+                    notes = "Add feathers to shafts. 15 XP per set of 15.",
+                    wiki = "https://runescape.wiki/w/Headless_shaft",
                     items = {
-                        { label = "Arrow shafts", names = { "Arrow shaft" } },
+                        { label = "Shafts", names = { "Shaft", "Arrow shaft" } },
                         { label = "Feathers", names = { "Feather" } },
                     },
                 },
                 {
                     id = "fletching_arrow_shafts",
-                    name = "Arrow shafts from logs",
+                    name = "Shafts from logs",
                     intensity = "low",
                     xpPerHour = 10000,
                     money = "Costs money",
-                    notes = "Slow. Oak shafts 15k XP/hr at 15, willow 20k at 30.",
-                    wiki = "https://runescape.wiki/w/Arrow_shaft",
+                    notes = "Slow. Oak shafts 15k XP/hr from 10, willow 20k from 20.",
+                    wiki = "https://runescape.wiki/w/Shaft",
                     items = { { label = "Logs", contains = { "logs" } } },
                 },
             },
         },
         {
-            from = 35, to = 52,
+            from = 25, to = 40,
             methods = {
                 {
                     id = "fletching_willow_longbow_string",
                     name = "String willow longbows",
                     intensity = "low",
-                    xpPerHour = 124500,
                     money = "Profitable",
-                    notes = "Fletching the unstrung bows is 83k XP/hr. Shortbows: 35+, 99.6k XP/hr.",
+                    notes = "25 XP per bow, the same as fletching the unstrung bow. Willow shortbows (20) give 16.5.",
                     wiki = "https://runescape.wiki/w/Willow_longbow",
                     requirements = { levels = { { skill = "Fletching", level = 25 } } },
                     items = {
@@ -59,23 +60,55 @@ return {
                         { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },
+            },
+        },
+        {
+            from = 40, to = 50,
+            methods = {
                 {
                     id = "fletching_maple_shortbow_string",
                     name = "String maple shortbows",
                     intensity = "low",
-                    xpPerHour = 150000,
                     money = "Profitable",
+                    notes = "41.5 XP per bow.",
                     wiki = "https://runescape.wiki/w/Maple_shortbow",
-                    requirements = { levels = { { skill = "Fletching", level = 50 } } },
+                    requirements = { levels = { { skill = "Fletching", level = 40 } } },
                     items = {
                         { label = "Maple shortbow (unstrung)", names = { "Maple shortbow (unstrung)" } },
                         { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },
+                {
+                    id = "fletching_maple_longbow_string",
+                    name = "String maple longbows",
+                    intensity = "low",
+                    money = "Profitable",
+                    notes = "46 XP per bow.",
+                    wiki = "https://runescape.wiki/w/Maple_longbow",
+                    requirements = { levels = { { skill = "Fletching", level = 45 } } },
+                    items = {
+                        { label = "Maple longbow (unstrung)", names = { "Maple longbow (unstrung)" } },
+                        { label = "Bowstrings", names = { "Bowstring" } },
+                    },
+                },
+                {
+                    id = "fletching_adamant_bolts",
+                    name = "Adamant bolts",
+                    intensity = "high",
+                    xpPerHour = 420000,
+                    money = "Costs money",
+                    notes = "70 XP per set of 10.",
+                    wiki = "https://runescape.wiki/w/Adamant_bolts",
+                    requirements = { levels = { { skill = "Fletching", level = 43 } } },
+                    items = {
+                        { label = "Adamant bolts (unf)", names = { "Adamant bolts (unf)" } },
+                        { label = "Feathers", names = { "Feather" } },
+                    },
+                },
             },
         },
         {
-            from = 52, to = 69,
+            from = 50, to = 70,
             methods = {
                 {
                     id = "fletching_broad_arrows",
@@ -91,52 +124,7 @@ return {
                     },
                     items = {
                         { label = "Broad arrowheads", names = { "Broad arrowheads" } },
-                        { label = "Headless arrows", names = { "Headless arrow" } },
-                    },
-                },
-                {
-                    id = "fletching_adamant_bolts",
-                    name = "Adamant bolts",
-                    intensity = "high",
-                    xpPerHour = 420000,
-                    money = "Costs money",
-                    wiki = "https://runescape.wiki/w/Adamant_bolts",
-                    requirements = { levels = { { skill = "Fletching", level = 61 } } },
-                    items = {
-                        { label = "Adamant bolts (unf)", names = { "Adamant bolts (unf)" } },
-                        { label = "Feathers", names = { "Feather" } },
-                    },
-                },
-                {
-                    id = "fletching_maple_longbow_string",
-                    name = "String maple longbows",
-                    intensity = "low",
-                    xpPerHour = 174600,
-                    money = "Profitable",
-                    notes = "Yew shortbows at 70: 202.5k XP/hr.",
-                    wiki = "https://runescape.wiki/w/Maple_longbow",
-                    requirements = { levels = { { skill = "Fletching", level = 55 } } },
-                    items = {
-                        { label = "Maple longbow (unstrung)", names = { "Maple longbow (unstrung)" } },
-                        { label = "Bowstrings", names = { "Bowstring" } },
-                    },
-                },
-            },
-        },
-        {
-            from = 69, to = 81,
-            methods = {
-                {
-                    id = "fletching_rune_bolts",
-                    name = "Rune bolts",
-                    intensity = "high",
-                    xpPerHour = 600000,
-                    money = "Costs money",
-                    wiki = "https://runescape.wiki/w/Rune_bolts",
-                    requirements = { levels = { { skill = "Fletching", level = 69 } } },
-                    items = {
-                        { label = "Rune bolts (unf)", names = { "Rune bolts (unf)" } },
-                        { label = "Feathers", names = { "Feather" } },
+                        { label = "Headless shafts", names = { "Headless shaft", "Headless arrow" } },
                     },
                 },
                 {
@@ -145,19 +133,52 @@ return {
                     intensity = "high",
                     xpPerHour = 562500,
                     money = "Costs money",
+                    notes = "187.5 XP per set of 15.",
                     wiki = "https://runescape.wiki/w/Rune_arrow",
-                    requirements = { levels = { { skill = "Fletching", level = 75 } } },
+                    requirements = { levels = { { skill = "Fletching", level = 50 } } },
                     items = {
                         { label = "Rune arrowheads", names = { "Rune arrowheads" } },
-                        { label = "Headless arrows", names = { "Headless arrow" } },
+                        { label = "Headless shafts", names = { "Headless shaft", "Headless arrow" } },
+                    },
+                },
+            },
+        },
+        {
+            from = 70, to = 81,
+            methods = {
+                {
+                    id = "fletching_rune_bolts",
+                    name = "Rune bolts",
+                    intensity = "high",
+                    xpPerHour = 600000,
+                    money = "Costs money",
+                    notes = "100 XP per set of 10. Can be made from 53.",
+                    wiki = "https://runescape.wiki/w/Rune_bolts",
+                    requirements = { levels = { { skill = "Fletching", level = 53 } } },
+                    items = {
+                        { label = "Rune bolts (unf)", names = { "Rune bolts (unf)" } },
+                        { label = "Feathers", names = { "Feather" } },
+                    },
+                },
+                {
+                    id = "fletching_yew_shortbow_string",
+                    name = "String yew shortbows",
+                    intensity = "low",
+                    money = "Profitable",
+                    notes = "75 XP per bow.",
+                    wiki = "https://runescape.wiki/w/Yew_shortbow",
+                    requirements = { levels = { { skill = "Fletching", level = 70 } } },
+                    items = {
+                        { label = "Yew shortbow (unstrung)", names = { "Yew shortbow (unstrung)" } },
+                        { label = "Bowstrings", names = { "Bowstring" } },
                     },
                 },
                 {
                     id = "fletching_yew_longbow_string",
                     name = "String yew longbows",
                     intensity = "low",
-                    xpPerHour = 225000,
                     money = "Profitable",
+                    notes = "80 XP per bow.",
                     wiki = "https://runescape.wiki/w/Yew_longbow",
                     requirements = { levels = { { skill = "Fletching", level = 75 } } },
                     items = {
@@ -189,7 +210,7 @@ return {
                     intensity = "high",
                     xpPerHour = 1034000,
                     money = "Very expensive",
-                    notes = "Fastest method. Dragon darts are 1.5M XP/hr but cost far more.",
+                    notes = "18.8 XP per dart. The wiki gives 1.03M to 1.13M XP/hr. Dragon darts (95) are 1.5M but cost far more.",
                     wiki = "https://runescape.wiki/w/Rune_dart",
                     requirements = { levels = { { skill = "Fletching", level = 81 } } },
                     items = {
@@ -203,7 +224,7 @@ return {
                     intensity = "low",
                     xpPerHour = 274500,
                     money = "Profitable",
-                    notes = "Magic shortbows at 80: 250.5k XP/hr.",
+                    notes = "91.5 XP per bow. Magic shortbows (80) give 83.3.",
                     wiki = "https://runescape.wiki/w/Magic_longbow",
                     requirements = { levels = { { skill = "Fletching", level = 85 } } },
                     items = {
@@ -215,10 +236,10 @@ return {
                     id = "fletching_zygomite_carestyling",
                     name = "Zygomite Carestyling",
                     intensity = "medium",
-                    xpPerHour = 235320,
+                    xpPerHour = 225515,
                     location = "Prehistoric Potterington's, Anachronia",
-                    money = "About 2.2M coins/hr from tempered fungal shafts",
-                    notes = "247k XP/hr with a crystal knife.",
+                    money = "Profit from tempered fungal shafts",
+                    notes = "196.1 XP per action. A crystal knife gives a 5% chance of double shafts and XP.",
                     wiki = "https://runescape.wiki/w/Zygomite_Carestyling",
                     requirements = {
                         levels = { { skill = "Fletching", level = 82 } },
@@ -239,7 +260,7 @@ return {
                     money = "Profitable",
                     notes = "Martial version 288.6k XP/hr but unprofitable.",
                     wiki = "https://runescape.wiki/w/Primal_crossbow",
-                    requirements = { levels = { { skill = "Fletching", level = 100 } } },
+                    requirements = { levels = { { skill = "Fletching", level = 103 } } },
                 },
                 {
                     id = "fletching_eternal_magic_shortbow",
@@ -270,7 +291,7 @@ return {
     },
 
     boosts = {
-        "Portable fletcher: +10% base XP",
+        "Portable fletcher: +10% base XP (portables are removed from the game on 23 Nov 2026)",
         "Fletcher's outfit: +1% to +6% XP",
         "Amulet of Fletcher's Offerings: +10% XP",
         "Ranger's Workroom: +5% XP",

@@ -458,7 +458,7 @@ return {
             },
         },
         necromancy_powerful_necroplasm = {
-            notes = "Three Attraction III glyphs; a necromancy potion boost lets you draw tier III glyphs.",
+            notes = "Three Attraction III glyphs (107 Necromancy): at 90 that needs a +17 boost from a supreme or elder overload.",
             wear = {
                 { label = "Alteration necklace", names = { "Alteration necklace" } },
                 { label = "Underworld Grimoire", contains = { "underworld grimoire" } },
@@ -466,7 +466,7 @@ return {
             carry = {
                 { label = "Greater necroplasm", names = { "Greater necroplasm" }, count = 200 },
                 { label = "Ritual candles", contains = { "ritual candle" } },
-                { label = "Extreme necromancy", contains = { "extreme necromancy" }, count = 1 },
+                { label = "Supreme or elder overload", contains = { "supreme overload", "elder overload" }, count = 1 },
             },
         },
         necromancy_powerful_communion = {

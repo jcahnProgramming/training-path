@@ -37,7 +37,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "Cooking on one gives +21% XP and a 5% chance of double food.",
+                    notes = "Cooking on one gives +21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
             },
@@ -69,7 +69,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP and a 5% chance of double food.",
+                    notes = "+21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
             },
@@ -102,7 +102,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP for food like sweetcorn.",
+                    notes = "+21% XP for food like sweetcorn. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
                 {
@@ -153,7 +153,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP and a 5% chance of double food.",
+                    notes = "+21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
                 {
@@ -205,7 +205,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP and a 5% chance of double food.",
+                    notes = "+21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
                 {
@@ -256,7 +256,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP and a 5% chance of double food.",
+                    notes = "+21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
                 {
@@ -307,7 +307,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP and a 5% chance of double food.",
+                    notes = "+21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
                 {
@@ -358,7 +358,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP and a 5% chance of double food.",
+                    notes = "+21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
                 {
@@ -411,7 +411,7 @@ return {
                     names = { "Portable range" },
                     tradeable = true,
                     obtain = "Grand Exchange. Others often place them on world 84, usually in Fort Forinthry.",
-                    notes = "+21% XP and a 5% chance of double food.",
+                    notes = "+21% XP and a 5% chance of double food. Portables are removed from the game on 23 Nov 2026.",
                     wiki = "https://runescape.wiki/w/Portable_range",
                 },
             },
@@ -420,7 +420,7 @@ return {
 
     inventories = {
         cooking_shark = {
-            notes = "Cook at a portable range for +21% XP. Gauntlets cut burns; the cape stops them at 99.",
+            notes = "Cook at the Fort Forinthry kitchen range (portable ranges leave on 23 Nov 2026). Gauntlets cut burns.",
             wear = {
                 { label = "Cooking gauntlets", names = { "Cooking gauntlets" } },
                 { label = "Sous chef's outfit", contains = { "sous chef's" } },
@@ -432,7 +432,7 @@ return {
             },
         },
         cooking_desert_sole = {
-            notes = "Strong cooking urns cover desert sole (level 52). Cook at a portable range for +21% XP.",
+            notes = "Strong cooking urns cover desert sole (level 52). Cook at the Fort Forinthry kitchen range.",
             wear = {
                 { label = "Cooking gauntlets", names = { "Cooking gauntlets" } },
                 { label = "Sous chef's outfit", contains = { "sous chef's" } },

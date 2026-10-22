@@ -126,7 +126,7 @@ return {
                     names = { "Steel arrow" },
                     levels = { { skill = "Ranged", level = 20 } },
                     tradeable = true,
-                    obtain = "Fletch with steel arrowheads (30 Fletching) or buy on the Grand Exchange.",
+                    obtain = "Fletch with steel arrowheads (20 Fletching) or buy on the Grand Exchange.",
                     wiki = "https://runescape.wiki/w/Steel_arrow",
                 },
                 {

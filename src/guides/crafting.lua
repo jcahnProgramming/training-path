@@ -243,26 +243,17 @@ return {
             },
         },
         {
-            from = 100, to = 111,
+            from = 100, to = 104,
             methods = {
-                {
-                    id = "crafting_platinum_jewellery",
-                    name = "Platinum jewellery",
-                    intensity = "high",
-                    xpPerHour = 428000,
-                    notes = "Tick-perfect rates: ring 428k, necklace (105) 454k, anklet (109) 526k. Real rates are lower.",
-                    wiki = "https://runescape.wiki/w/Platinum_bar",
-                    requirements = { levels = { { skill = "Crafting", level = 104 } } },
-                },
                 {
                     id = "crafting_exquisite_urns",
                     name = "Exquisite urns",
                     intensity = "low",
                     xpPerHour = 238500,
-                    money = "Profitable",
-                    notes = "Mining urn 238.5k XP/hr at 102, up to 290k for farming urns at 110.",
-                    wiki = "https://runescape.wiki/w/Urns",
+                    notes = "From 102. Mining urns 318 XP each, 238.5k XP/hr; higher urns unlock up to farming urns at 110 (290k).",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Crafting_training#Exquisite_urns_-_level_102+",
                     requirements = { levels = { { skill = "Crafting", level = 102 } } },
+                    items = { { label = "Soft porcelain clay", names = { "Soft porcelain clay" } } },
                 },
                 {
                     id = "crafting_starbloom_apex",
@@ -274,10 +265,45 @@ return {
                 },
             },
         },
+        {
+            from = 104, to = 111,
+            methods = {
+                {
+                    id = "crafting_platinum_jewellery",
+                    name = "Platinum jewellery",
+                    intensity = "high",
+                    xpPerHour = 428000,
+                    location = "Any furnace",
+                    notes = "Platinum bar and dragonstone with a mould. Tick-perfect: ring 428k, necklace (105) 454k, anklet (109) 526k.",
+                    wiki = "https://runescape.wiki/w/Platinum_jewellery",
+                    requirements = { levels = { { skill = "Crafting", level = 104 } } },
+                    items = {
+                        { label = "Platinum bars", names = { "Platinum bar" } },
+                        { label = "Dragonstones", names = { "Dragonstone" } },
+                    },
+                },
+                {
+                    id = "crafting_exquisite_urns_104",
+                    name = "Exquisite urns",
+                    intensity = "low",
+                    xpPerHour = 250700,
+                    notes = "Fishing urns (104) 250.7k XP/hr, up to farming urns at 110 (290k).",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Crafting_training#Exquisite_urns_-_level_102+",
+                    items = { { label = "Soft porcelain clay", names = { "Soft porcelain clay" } } },
+                },
+                {
+                    id = "crafting_starbloom_apex_104",
+                    name = "Starbloom or apex hide equipment",
+                    intensity = "medium",
+                    notes = "31,680 XP per base set, doubling each tier from +2. Some tiers are profitable.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Crafting_training",
+                },
+            },
+        },
     },
 
     boosts = {
-        "Portable crafter: +10% base XP",
+        "Portable crafter: +10% base XP until portables are removed on 23 Nov 2026 (spin at a normal wheel after)",
         "Artisan's outfit: +1% per piece, +6% for the full set",
         "Amulet of Artisan's Offerings: +10% base XP",
         "Artificer's measure: +5% XP",

@@ -87,7 +87,7 @@ return {
                     name = "Flesh Crawlers",
                     intensity = "medium",
                     location = "Stronghold of Security, level 2",
-                    notes = "60 Constitution XP per kill. AoE abilities work well here. Bring food.",
+                    notes = "59.4 Constitution XP per kill. AoE abilities work well here. Bring food.",
                     wiki = "https://runescape.wiki/w/Flesh_Crawler",
                 },
                 {
@@ -249,7 +249,6 @@ return {
                     name = "Corrupted scorpions",
                     intensity = "low",
                     location = "Sophanem Slayer Dungeon",
-                    money = "About 4,558 coins per kill",
                     notes = "148.5 Constitution XP per kill. The dungeon chest can collect drops for you.",
                     wiki = "https://runescape.wiki/w/Corrupted_scorpion",
                     requirements = {

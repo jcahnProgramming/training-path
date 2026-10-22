@@ -1,6 +1,9 @@
 --[[
     Cooking training guide (data only, no code).
     Source: RuneScape Wiki, "Pay-to-play Cooking training" (CC BY-NC-SA 3.0).
+    Portable ranges are removed from the game on 23 November 2026 ("2026
+    microtransaction items changes"), so the guide points to the Fort
+    Forinthry kitchen range, which the training page gives as the alternative.
     Format: docs/guide-format.md
 ]]
 
@@ -18,9 +21,9 @@ return {
                     id = "cooking_shrimp_anchovy_chicken",
                     name = "Shrimps, anchovies or chicken",
                     intensity = "medium",
-                    location = "Range near a bank, or a portable range",
+                    location = "Fort Forinthry",
                     money = "Cheap",
-                    notes = "About 125 of any of these. Expect around 40% to burn.",
+                    notes = "Use the kitchen range (Murder on the Border) or any range near a bank. About 125 of any of these; around 40% burn.",
                     wiki = "https://runescape.wiki/w/Pay-to-play_Cooking_training",
                     items = {
                         { label = "Raw shrimps, anchovies or chicken", names = { "Raw shrimps", "Raw anchovies", "Raw chicken" } },
@@ -36,9 +39,9 @@ return {
                     name = "Trout",
                     intensity = "medium",
                     xpPerHour = 25000,
-                    location = "Range near a bank, or a portable range",
+                    location = "Fort Forinthry",
                     money = "About -28k total",
-                    notes = "70 XP each, about 125 trout. 30k XP/hr on a portable range. Stops burning at 49.",
+                    notes = "70 XP each, about 125 trout. Stops burning at 49.",
                     crossovers = "Fly fish the trout yourself for Fishing XP",
                     wiki = "https://runescape.wiki/w/Raw_trout",
                     requirements = { levels = { { skill = "Cooking", level = 15 } } },
@@ -57,8 +60,8 @@ return {
                     intensity = "high",
                     xpPerHour = 700000,
                     location = "Anywhere (near a bank)",
-                    money = "About -105k per inventory",
-                    notes = "Use grapes on jugs of water. Wiki says upwards of 700k XP/hr.",
+                    money = "Loses money on every jug",
+                    notes = "Use grapes on jugs of water: upwards of 700k XP/hr (about 800k on the Jug of wine page). Wine ferments in the bank.",
                     wiki = "https://runescape.wiki/w/Jug_of_wine",
                     requirements = { levels = { { skill = "Cooking", level = 35 } } },
                     items = {
@@ -71,9 +74,9 @@ return {
                     name = "Sweetcorn",
                     intensity = "medium",
                     xpPerHour = 150000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-13.42 gp/xp",
-                    notes = "104 XP each, about 1,000 sweetcorn. 181k XP/hr on a portable range. Stops burning at 53.",
+                    notes = "104 XP each, about 1,000 sweetcorn. Kitchen range by the bank chest. Stops burning at 53.",
                     wiki = "https://runescape.wiki/w/Sweetcorn",
                     requirements = { levels = { { skill = "Cooking", level = 28 } } },
                     items = {
@@ -90,9 +93,9 @@ return {
                     name = "Desert sole",
                     intensity = "medium",
                     xpPerHour = 200000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-5.49 gp/xp",
-                    notes = "142.5 XP each. 241k XP/hr on a portable range. Stops burning at 81 with cooking gauntlets.",
+                    notes = "142.5 XP each. Stops burning at 81 with cooking gauntlets.",
                     crossovers = "Fish the sole in Menaphos for Fishing XP",
                     wiki = "https://runescape.wiki/w/Raw_desert_sole",
                     requirements = { levels = { { skill = "Cooking", level = 52 } } },
@@ -111,9 +114,9 @@ return {
                     name = "Ghostly sole",
                     intensity = "medium",
                     xpPerHour = 225000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-1.91 gp/xp",
-                    notes = "160 XP each. 271k XP/hr on a portable range.",
+                    notes = "160 XP each.",
                     crossovers = "Fish the sole in the City of Um for Fishing XP",
                     wiki = "https://runescape.wiki/w/Raw_ghostly_sole",
                     requirements = { levels = { { skill = "Cooking", level = 66 } } },
@@ -126,7 +129,7 @@ return {
                     name = "Desert sole",
                     intensity = "medium",
                     xpPerHour = 200000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-5.49 gp/xp",
                     notes = "142.5 XP each. Stops burning at 81 with cooking gauntlets.",
                     wiki = "https://runescape.wiki/w/Raw_desert_sole",
@@ -145,9 +148,9 @@ return {
                     name = "Beltfish",
                     intensity = "medium",
                     xpPerHour = 231000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-4.92 gp/xp",
-                    notes = "165 XP each. 280k XP/hr on a portable range. High burn rate without gauntlets.",
+                    notes = "165 XP each. High burn rate without gauntlets.",
                     wiki = "https://runescape.wiki/w/Raw_beltfish",
                     requirements = { levels = { { skill = "Cooking", level = 80 } } },
                     items = {
@@ -165,9 +168,9 @@ return {
                     name = "Rocktail",
                     intensity = "medium",
                     xpPerHour = 315000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-1.84 gp/xp",
-                    notes = "225 XP each. 381k XP/hr on a portable range. Burns without gauntlets.",
+                    notes = "225 XP each. Burns without gauntlets.",
                     wiki = "https://runescape.wiki/w/Raw_rocktail",
                     requirements = { levels = { { skill = "Cooking", level = 93 } } },
                     items = {
@@ -180,9 +183,9 @@ return {
                     name = "Shark",
                     intensity = "medium",
                     xpPerHour = 294000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-0.44 gp/xp",
-                    notes = "210 XP each. 355k XP/hr on a portable range. Stops burning at 94 with gauntlets.",
+                    notes = "210 XP each. Stops burning at 94 with gauntlets.",
                     wiki = "https://runescape.wiki/w/Raw_shark",
                     requirements = { levels = { { skill = "Cooking", level = 90 } } },
                     items = {
@@ -200,9 +203,9 @@ return {
                     name = "Blue blubber jellyfish",
                     intensity = "medium",
                     xpPerHour = 329000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "-9.7 gp/xp",
-                    notes = "235 XP each. 398k XP/hr on a portable range. Very low burn chance.",
+                    notes = "235 XP each. Very low burn chance.",
                     wiki = "https://runescape.wiki/w/Raw_blue_blubber_jellyfish",
                     requirements = { levels = { { skill = "Cooking", level = 95 } } },
                     items = {
@@ -219,9 +222,9 @@ return {
                     name = "Sailfish",
                     intensity = "medium",
                     xpPerHour = 378000,
-                    location = "Portable range (world 84, Fort Forinthry) or range near a bank",
+                    location = "Fort Forinthry",
                     money = "About -20 gp/xp",
-                    notes = "270 XP each. 457k XP/hr on a portable range. Wear the cooking cape or gauntlets to avoid burns.",
+                    notes = "270 XP each. Wear the cooking cape or gauntlets to avoid burns.",
                     wiki = "https://runescape.wiki/w/Raw_sailfish",
                     requirements = { levels = { { skill = "Cooking", level = 99 } } },
                     items = {
@@ -234,7 +237,8 @@ return {
     },
 
     boosts = {
-        "Portable range: +21% base XP",
+        "Fort Forinthry kitchen (Murder on the Border): 3% fewer burns at tier 2, +5% base XP at tier 3",
+        "Portable range: +21% base XP until portables are removed on 23 Nov 2026",
         "Bonfire: +10% XP (not in Prifddinas, Yeti Town or Menaphos)",
         "Sous chef's outfit: +1 to 6% XP",
         "Cooking urns: +20% XP, urn enhancer +25%",

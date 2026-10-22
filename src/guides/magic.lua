@@ -170,6 +170,7 @@ return {
                     wiki = "https://runescape.wiki/w/Watchtower_Teleport",
                     requirements = {
                         levels = { { skill = "Magic", level = 58 } },
+                        quests = { "Watchtower" },
                     },
                     items = {
                         { label = "Law runes", names = { "Law rune" } },
@@ -231,6 +232,8 @@ return {
                     wiki = "https://runescape.wiki/w/Hunter_Kit",
                     requirements = {
                         levels = { { skill = "Magic", level = 71 } },
+                        quests = { "Dream Mentor" },
+                        other = { "Lunar spellbook" },
                     },
                     items = {
                         { label = "Astral runes", names = { "Astral rune" } },
@@ -247,6 +250,8 @@ return {
                     wiki = "https://runescape.wiki/w/Superglass_Make",
                     requirements = {
                         levels = { { skill = "Magic", level = 77 } },
+                        quests = { "Dream Mentor" },
+                        other = { "Lunar spellbook" },
                     },
                     items = {
                         { label = "Astral runes", names = { "Astral rune" } },
@@ -284,6 +289,11 @@ return {
                     notes = "83 XP per amulet. A mystic mud staff cuts the cost.",
                     crossovers = "Also gives a little Crafting XP",
                     wiki = "https://runescape.wiki/w/String_Jewellery",
+                    requirements = {
+                        levels = { { skill = "Magic", level = 80 } },
+                        quests = { "Lunar Diplomacy" },
+                        other = { "Lunar spellbook" },
+                    },
                     items = {
                         { label = "Unstrung amulets", contains = { "(unstrung)" } },
                         { label = "Astral runes", names = { "Astral rune" } },

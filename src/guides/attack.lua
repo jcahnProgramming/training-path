@@ -198,7 +198,6 @@ return {
                     name = "Corrupted scorpions",
                     intensity = "low",
                     location = "Sophanem Slayer Dungeon",
-                    money = "About 4,558 coins per kill",
                     notes = "450 XP per kill. The dungeon chest can collect drops for you.",
                     wiki = "https://runescape.wiki/w/Corrupted_scorpion",
                     requirements = {

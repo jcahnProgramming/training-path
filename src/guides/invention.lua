@@ -50,7 +50,7 @@ return {
                     id = "invention_black_salamanders",
                     name = "Disassembling augmented black salamanders",
                     intensity = "medium",
-                    money = "734,222 coins incl. augmentors",
+                    money = "Cost of 2 black salamanders and 2 augmentors",
                     notes = "Research the level 5 blueprint, then disassemble two augmented black salamanders.",
                     wiki = "https://runescape.wiki/w/Invention_training",
                     items = {
@@ -108,15 +108,15 @@ return {
             methods = {
                 {
                     id = "invention_ancient_gizmos",
-                    name = "Creating ancient armour gizmos",
+                    name = "Creating ancient weapon gizmos",
                     intensity = "medium",
                     xpPerHour = 21500000,
-                    money = "Very expensive: 25.43 GP/XP",
-                    notes = "Each gizmo costs 818,819 coins for 32,200 XP. 86 to 120 is 60,672,821 XP, about 2.83 hours.",
-                    wiki = "https://runescape.wiki/w/Ancient_gizmo",
+                    money = "Very expensive",
+                    notes = "Weapon shells with 9 timeworn components: 32,200 XP each. Armour shells can't take timeworn components.",
+                    wiki = "https://runescape.wiki/w/Ancient_weapon_gizmo_shell",
                     requirements = {
                         levels = { { skill = "Invention", level = 86 } },
-                        other = { "Ancient Invention unlocked", "Extreme invention potion to reach timeworn components" },
+                        other = { "'Ancient gizmos' blueprint researched", "Extreme invention potion (103) to discover timeworn components" },
                     },
                 },
                 {
