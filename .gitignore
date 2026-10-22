@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Editor / tooling
+.vscode/
+.idea/
+.claude/
+*.swp
+
+# Build / packaging output (zips made for mod.io upload)
+*.zip
+dist/
