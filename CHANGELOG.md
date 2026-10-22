@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.1.8
+
+- Guides for all 29 skills (578 methods), researched from the RuneScape Wiki (CC BY-NC-SA 3.0). Format: docs/guide-format.md.
+- Window layout: tab row (Skills, Levels, gold-star Favourites) on every page; "< Back" with a breadcrumb on pages opened from a tab.
+- Skills tab: two-column grid of skills with your level; click one for its guide.
+- Guide page: bands with "(you are here)", each method with a star toggle, summary and a green "Ready" / red "Missing: ..." line.
+- Method page: requirements (levels, quests) and items to wear/carry, each green when met and red when not; grey for things the plugin can't check (tool belt, bank, partial quests).
+- Favourites: star any method; the star tab lists them and opens a method directly. Saved in PersistentDB.
+- Wiki buttons: show the wiki link in a text box to select and copy (the plugin API can't open a browser).
+- New src/checks.lua (level, quest via QuestType.hasFinishedQuest, item name matching on backpack + worn), src/favourites.lua; guides load automatically, a broken guide file only hides that guide.
+- tools/validate_guides.lua: checks every guide against the format (run with Lua 5.4).
+- Back button text fixed: the game reads "<" as a text tag, so the label is now written "<lt> Back". Added a "Home" button next to it (goes to the Skills tab).
+- Regions: methods in gated areas (Prifddinas, Menaphos, dungeons, dig sites...) show a "Region" section on the method page: unlocked/locked (quests and levels checked in-game), how to unlock it, a wiki link, and a warning for dangerous areas. A locked region also appears in the guide's red "Missing:" line. Data in src/regions_cities.lua and src/regions_dungeons.lua (73 regions); matched to methods by location text (src/regions.lua). Regions in either/or locations ("X or Y") and travel shortcuts (fairy rings) are shown as optional, never as Missing.
+- "How to get there" on every method page: directions from the wiki (src/travel_1-4.lua via src/travel.lua). Where the wiki gives a map spot, "Show directions" turns on a live line under the tabs on every page, e.g. "Heading to X: 340 tiles north-east" (src/compass.lua; reads only the player's own position), with a Stop button.
+- Tried and removed: the game's in-world hint arrow (HintList) crashed the client when pointed at a far-away spot.
+
+## 0.1.7
+
+- Live tracking on the activity page: XP gained, XP/hr (after 30 s), XP and time to next level.
+- Estimated urn fill (XP gained while an urn can fill; resets when a new full urn appears). Labelled as an estimate: the API doesn't expose urn charges.
+- "Reset tracking" button. Tracking continues through page redraws (checklist changes, resize).
+- New src/tracker.lua (any skill): timing from Event.Logic ticks (50/s), standard XP table to 120.
+
 ## 0.1.6
 
 - First activity: "Orikalkum with strong smithing urns" (Fort Forinthry), opened from the Smithing guide.

@@ -44,6 +44,30 @@ as installed on 2026-10-21). "Seen in" names the plugin that demonstrates it.
 - `config.Inv.METAL_BANK` exists, but `Inventory.Find` gave isValid = false on a level-1 beta
   account. Unknown whether it's ever sent to the client.
 
+## Quests, links (from docs, 2026-10-22)
+- Quest completion: `config.Quest.<NAME>` or `config.Quest.FromID(id)` -> `.name`, `.hasFinishedQuest`,
+  `.hasStartedQuest`, `.canStartQuest`, `.deprecated`. We map display name -> quest by scanning ids.
+- There is NO API to open a web page or copy to the clipboard (searched the whole docs index).
+  `"urls"` in plugin.json is only for HTTPRequest (needs httpAccess). Wiki links are shown in a
+  PrettyUI text field the player can select and copy.
+- PrettyUI SpriteButton names include "STAR" (silver/bronze/gold). Gold star sprite:
+  `id.Sprite.RAND_SPEEDRUN_STAR_GOLD_0`.
+
+## Hint arrow and coordinates
+- `HintList.AddArrow({ name, coordFine, arrowID = 0 })` / `HintList.RemoveArrow(name)`: the game's own
+  yellow hint arrow. NOT in the public docs. **It CRASHED THE CLIENT (not catchable by pcall)** when we
+  pointed it at a wiki coordinate (v0.1.8, probably far away / not loaded). Quest Helper only uses the
+  plain arrow for targets in the loaded scene (checks distance and `World.GetGroundHeight` first) and a
+  "pointer" variant (`pointerModelID = id.Model.YELLOW_HINT_ARROW_SMALL`, y = 0) otherwise.
+  We removed it and show text directions instead (src/compass.lua). Don't retry without those checks.
+- Player position: `Player.GetEntity().coordGrid` -> `.x`, `.z`, `.level` (check `.isValid`).
+- World tile -> CoordGrid: `CoordGrid.new(level << 28 | x << 14 | z)`; `:ToCoordFine(true)` = tile centre;
+  `CoordFine.new(level, x, y, z)` in fine units (512 per tile). RS Wiki map x,y = game tile x,z.
+- Guidelines: "Navigation or guidance systems" are allowed but subject to review; "automatically indicating
+  where players should stand or move" is prohibited. Our arrow is player-requested only, points to a
+  destination area from the wiki, one at a time, never in combat. Mention this in the submission notes.
+- Text: "<" starts a text tag in game strings; write "<lt>" for a literal "<".
+
 ## Events and timing
 - `Event.X.Subscribe("unique-id", fn)` / `Event.X.Unsubscribe("unique-id")`.
 - `Event.Logic`: 50 per second, `e.logicTick`. `Event.ServerLogic`: once per 0.6 s game tick.

@@ -46,6 +46,14 @@ Skills.list = {
     { name = "Woodcutting",   type = SkillType.WOODCUTTING },
 }
 
+-- Find a skill entry by name, e.g. Skills.find("Smithing"). nil if unknown.
+function Skills.find(name)
+    for _, skill in ipairs(Skills.list) do
+        if skill.name == name then return skill end
+    end
+    return nil
+end
+
 -- Read one skill's level and XP. Returns nil, nil if not logged in.
 function Skills.read(skill)
     if not Player.IsAvailable() then return nil, nil end

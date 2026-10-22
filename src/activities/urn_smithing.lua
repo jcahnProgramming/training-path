@@ -44,9 +44,7 @@ local function countInBackpack(item)
 end
 
 local function findSmithing()
-    for _, skill in ipairs(Skills.list) do
-        if skill.name == "Smithing" then return skill end
-    end
+    return Skills.find("Smithing")
 end
 
 -- Build the checklist from the player's current level and backpack.
@@ -94,6 +92,49 @@ function Activity.checklist()
     add("info", "Strong urns only fill from items needing level 70 or lower. Orikalkum counts.")
 
     return lines
+end
+
+----------------------------------------------------------------------------
+-- Urn fill ESTIMATE
+----------------------------------------------------------------------------
+-- The game doesn't tell plugins how full an urn is (item charges aren't in
+-- the API). So we estimate it: add up the Smithing XP gained while an urn
+-- that can fill is in the backpack. When a new full urn appears, that urn
+-- is done, so the count starts again from 0.
+-- It can read HIGH, because boosts (outfit, etc.) add XP that doesn't fill
+-- the urn, and it can't know about XP gained before tracking started.
+
+Activity.URN_FILL_XP = 7254
+
+local urnState = { filledXp = 0, lastXp = nil, lastFull = 0 }
+
+-- Start counting from zero (when the activity page is opened, or on reset).
+function Activity.resetUrnEstimate()
+    local _, xp = Skills.read(findSmithing())
+    urnState = { filledXp = 0, lastXp = xp, lastFull = countInBackpack(URN.full) }
+end
+
+-- Called once per game tick. Returns the estimated XP in the current urn,
+-- or nil if no urn is filling right now.
+function Activity.updateUrnEstimate()
+    local _, xp = Skills.read(findSmithing())
+    if xp == nil then return nil end
+    if urnState.lastXp == nil then urnState.lastXp = xp end
+
+    local canFill = countInBackpack(URN.ready) + countInBackpack(URN.filling)
+    local full = countInBackpack(URN.full)
+
+    -- A new full urn appeared: the urn we were counting is finished.
+    if full > urnState.lastFull then urnState.filledXp = 0 end
+    urnState.lastFull = full
+
+    if canFill > 0 then
+        urnState.filledXp = urnState.filledXp + (xp - urnState.lastXp)
+    end
+    urnState.lastXp = xp
+
+    if canFill == 0 then return nil end
+    return math.min(urnState.filledXp, Activity.URN_FILL_XP)
 end
 
 return Activity

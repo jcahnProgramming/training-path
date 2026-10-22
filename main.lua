@@ -1,5 +1,5 @@
 --[[
-    Training Path  -  v0.1.6
+    Training Path  -  v0.1.8
     -----------------------------------
     A movable, resizable window with skill training guides.
 
@@ -18,8 +18,10 @@
          Without that flag, clicks fall through to the game (our v0.1.1 bug).
       4. Saves the window position and size in PersistentDB so they are
          restored the next time the plugin loads.
-      5. Shows the pages from src/pages.lua: a home page (guide buttons and
-         the player's levels) and a guide page per skill (src/guides/).
+      5. Shows the pages from src/pages.lua: tabs for Skills, Levels and
+         Favourites (star), a guide for every skill (src/guides/), a page per
+         training method with green/red requirement and item checks, and
+         activity helpers (src/activities/).
 
     Nothing in this plugin sends input or actions to the game. It only reads
     where the mouse is while the player holds the resize corner.
@@ -270,4 +272,4 @@ function PluginShutdown()
     grip:Destroy()
 end
 
-print("[Training Path] Loaded v0.1.6. Window " .. window.root.width .. " x " .. window.root.height)
+print("[Training Path] Loaded v0.1.8. Window " .. window.root.width .. " x " .. window.root.height)

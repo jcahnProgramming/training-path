@@ -1,31 +1,13 @@
 --[[
     Smithing training guide (data only, no code).
-
-    Source: RuneScape Wiki, "Pay-to-play Smithing training"
-    https://runescape.wiki/w/Pay-to-play_Smithing_training
-    Licensed CC BY-NC-SA 3.0. Numbers are copied from that page as of
-    2026-10-21; anything the wiki didn't state has been left out rather
-    than guessed.
-
-    Format (the same for every skill guide):
-      skill   = skill name, matching src/skills.lua
-      source  = credit line shown at the bottom of the guide
-      bands   = level ranges, lowest first. Each band:
-          from, to = level range (from <= your level < to)
-          methods  = ways to train in this range. Each method:
-              name       = what you do
-              intensity  = "high"   click-intensive / needs attention
-                           "medium" a click every so often
-                           "low"    AFK
-              xpPerHour  = number, or nil if the wiki doesn't give one
-              location, items, requirements, money, notes = short text (optional)
-              activity   = id of an activity in src/activities/ (optional);
-                           adds an "Open activity" button
-      boosts  = list of short text lines about XP boosts for this skill
+    Source: RuneScape Wiki, "Pay-to-play Smithing training" (CC BY-NC-SA 3.0).
+    Format: docs/guide-format.md
 ]]
 
 return {
     skill = "Smithing",
+    maxLevel = 110,
+    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training",
     source = "Data: RuneScape Wiki, Pay-to-play Smithing training (CC BY-NC-SA 3.0)",
 
     bands = {
@@ -33,18 +15,24 @@ return {
             from = 1, to = 29,
             methods = {
                 {
+                    id = "smithing_knights_sword",
                     name = "The Knight's Sword (quest)",
                     intensity = "high",
                     notes = "Gives 12,725 XP: level 1 straight to 29. About 30 minutes.",
+                    wiki = "https://runescape.wiki/w/The_Knight%27s_Sword",
+                    requirements = {
+                        levels = { { skill = "Mining", level = 10 } },
+                    },
                 },
                 {
-                    name = "Smelting bars (bronze, then iron, then steel)",
+                    id = "smithing_smelt_low",
+                    name = "Smelting bronze, iron, then steel",
                     intensity = "low",
                     xpPerHour = 2000,
                     location = "Any furnace",
-                    items = "Ores (and coal for steel)",
                     money = "Profitable",
-                    notes = "Very slow but AFK. Bronze 2k XP/hr, iron 4k, steel 6k.",
+                    notes = "Very slow but AFK. Bronze 2k XP/hr, iron 4k, steel 6k. Ores go in your metal bank.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
                 },
             },
         },
@@ -52,124 +40,288 @@ return {
             from = 29, to = 40,
             methods = {
                 {
-                    name = "Forging from bars",
+                    id = "smithing_forge_steel_mithril",
+                    name = "Forging steel or mithril items",
                     intensity = "medium",
                     xpPerHour = 16667,
                     location = "Forge and anvil",
-                    items = "Metal bars",
-                    money = "Generally profitable",
-                    notes = "Steel full helm +1 is about 16.7k XP/hr. AFK with a smithing autoheater.",
+                    money = "Profitable",
+                    notes = "Steel full helm +1 about 16.7k XP/hr, mithril +2 about 25.7k. AFK with a smithing autoheater.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_from_bars",
                 },
                 {
-                    name = "Smelting bars (mithril)",
+                    id = "smithing_smelt_mithril",
+                    name = "Smelting mithril bars",
                     intensity = "low",
                     xpPerHour = 10000,
                     location = "Any furnace",
-                    items = "Mithril ore and coal",
                     money = "Profitable",
+                    notes = "Needs mithril ore and coal in your metal bank.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
                 },
             },
         },
         {
-            from = 40, to = 89,
+            from = 40, to = 50,
             methods = {
                 {
-                    name = "Forging burial armour",
+                    id = "smithing_burial_adamant",
+                    name = "Burial armour (adamant)",
                     intensity = "medium",
                     xpPerHour = 85680,
                     location = "Burial forge and anvil, Artisans' Workshop",
-                    items = "Highest-tier armour you can smith, bought from the GE",
                     money = "Very expensive",
-                    notes = "Fastest method. Adamant 85.7k XP/hr, rune 168k, orikalkum 210k.",
+                    notes = "Fastest method. Upgrade bought armour; the set is destroyed. AFK with an autoheater.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_burial_armour",
                 },
                 {
-                    name = "Orikalkum with strong smithing urns",
+                    id = "smithing_forge_adamant",
+                    name = "Forging adamant items",
                     intensity = "medium",
-                    location = "Fort Forinthry",
-                    requirements = "Smithing 60; Crafting 49 to add fire runes to urns",
-                    items = "Orikalkum bars in your metal bank, strong smithing urns",
-                    notes = "Each full urn gives 1,450.8 bonus Smithing XP when teleported.",
-                    activity = "urn_smithing",
+                    xpPerHour = 29143,
+                    location = "Forge and anvil",
+                    money = "Profitable",
+                    notes = "Adamant full helm +2 is about 29.1k XP/hr.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_from_bars",
                 },
                 {
-                    name = "Forging from bars",
+                    id = "smithing_smelt_adamant",
+                    name = "Smelting adamant bars",
+                    intensity = "low",
+                    xpPerHour = 13700,
+                    location = "Any furnace",
+                    money = "Profitable",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
+                },
+            },
+        },
+        {
+            from = 50, to = 60,
+            methods = {
+                {
+                    id = "smithing_burial_rune",
+                    name = "Burial armour (rune)",
+                    intensity = "medium",
+                    xpPerHour = 168000,
+                    location = "Burial forge and anvil, Artisans' Workshop",
+                    money = "Very expensive",
+                    notes = "Upgrade bought armour; the set is destroyed. AFK with an autoheater.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_burial_armour",
+                },
+                {
+                    id = "smithing_forge_rune",
+                    name = "Forging rune items",
                     intensity = "medium",
                     xpPerHour = 48000,
                     location = "Forge and anvil",
-                    items = "Metal bars",
-                    money = "Generally profitable",
-                    notes = "Rune full helm +3 is about 48k XP/hr, orikalkum +3 about 60k.",
+                    money = "Profitable",
+                    notes = "Rune full helm +3 is about 48k XP/hr.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_from_bars",
                 },
                 {
-                    name = "Smelting bars",
+                    id = "smithing_smelt_rune",
+                    name = "Smelting rune bars",
                     intensity = "low",
                     xpPerHour = 20000,
                     location = "Any furnace",
-                    items = "Ores",
                     money = "Profitable",
-                    notes = "Adamant 13.7k XP/hr, rune 20k, orikalkum 25.4k, necronium 34k.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
                 },
             },
         },
         {
-            from = 89, to = 99,
+            from = 60, to = 80,
             methods = {
                 {
-                    name = "Forging burial armour",
+                    id = "smithing_burial_orikalkum",
+                    name = "Burial armour (orikalkum, necronium)",
+                    intensity = "medium",
+                    xpPerHour = 210000,
+                    location = "Burial forge and anvil, Artisans' Workshop",
+                    money = "Very expensive",
+                    notes = "Orikalkum 210k XP/hr, necronium (70) 450k. The set is destroyed.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_burial_armour",
+                },
+                {
+                    id = "smithing_urns_orikalkum",
+                    name = "Orikalkum with strong smithing urns",
+                    intensity = "medium",
+                    location = "Fort Forinthry",
+                    notes = "Orikalkum bars in your metal bank. Each full urn gives 1,450.8 bonus Smithing XP when teleported.",
+                    wiki = "https://runescape.wiki/w/Strong_smithing_urn",
+                    requirements = {
+                        levels = {
+                            { skill = "Smithing", level = 60 },
+                            { skill = "Crafting", level = 49 },
+                        },
+                    },
+                    items = {
+                        { label = "Strong smithing urn (ready or filling)", names = { "Strong smithing urn (empty)", "Strong smithing urn" } },
+                    },
+                    activity = "urn_smithing",
+                },
+                {
+                    id = "smithing_forge_orikalkum_necronium",
+                    name = "Forging orikalkum or necronium",
+                    intensity = "medium",
+                    xpPerHour = 60000,
+                    location = "Forge and anvil",
+                    money = "Profitable",
+                    notes = "Orikalkum full helm +3 about 60k XP/hr, necronium +4 (70) about 111k.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_from_bars",
+                },
+                {
+                    id = "smithing_smelt_orikalkum_necronium",
+                    name = "Smelting orikalkum or necronium",
+                    intensity = "low",
+                    xpPerHour = 25400,
+                    location = "Any furnace",
+                    money = "Profitable",
+                    notes = "Orikalkum 25.4k XP/hr, necronium 34k.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
+                },
+            },
+        },
+        {
+            from = 80, to = 90,
+            methods = {
+                {
+                    id = "smithing_burial_bane",
+                    name = "Burial armour (bane)",
                     intensity = "medium",
                     xpPerHour = 560000,
                     location = "Burial forge and anvil, Artisans' Workshop",
-                    items = "Highest-tier armour you can smith, bought from the GE",
                     money = "Very expensive",
-                    notes = "Bane 560k XP/hr, elder rune 1.26M.",
+                    notes = "The set is destroyed. AFK with an autoheater.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_burial_armour",
                 },
                 {
-                    name = "Forging from bars",
-                    intensity = "medium",
-                    xpPerHour = 138272,
-                    location = "Forge and anvil",
-                    items = "Metal bars",
-                    money = "Generally profitable",
-                    notes = "Bane full helm +4 is about 138k XP/hr.",
-                },
-                {
+                    id = "smithing_corrupted_ore",
                     name = "Corrupted ore",
                     intensity = "low",
                     xpPerHour = 400000,
-                    location = "Prifddinas",
-                    requirements = "Prifddinas access",
-                    items = "Corrupted ore (mined, untradeable)",
-                    notes = "160 XP per ore (192 with Voice of Seren). About 400k XP/hr with Voice of Seren and the full blacksmith's outfit.",
+                    location = "Trahaearn district, Prifddinas",
+                    notes = "160 XP per ore. Up to 400k XP/hr with Voice of Seren, full blacksmith's outfit and Superheat Form.",
+                    crossovers = "You mine the ore yourself for Mining XP",
+                    wiki = "https://runescape.wiki/w/Corrupted_ore",
+                    requirements = {
+                        levels = { { skill = "Smithing", level = 89 } },
+                        quests = { "Plague's End" },
+                    },
+                    items = {
+                        { label = "Corrupted ore", names = { "Corrupted ore" } },
+                    },
+                },
+                {
+                    id = "smithing_forge_bane",
+                    name = "Forging bane items",
+                    intensity = "medium",
+                    xpPerHour = 138272,
+                    location = "Forge and anvil",
+                    money = "Profitable",
+                    notes = "Bane full helm +4 is about 138k XP/hr.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_from_bars",
+                },
+                {
+                    id = "smithing_smelt_bane",
+                    name = "Smelting bane bars",
+                    intensity = "low",
+                    xpPerHour = 42000,
+                    location = "Any furnace",
+                    money = "Profitable",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
                 },
             },
         },
         {
-            from = 99, to = 111,
+            from = 90, to = 100,
             methods = {
                 {
-                    name = "Forging burial armour",
+                    id = "smithing_burial_elder_rune",
+                    name = "Burial armour (elder rune)",
                     intensity = "medium",
                     xpPerHour = 1260000,
                     location = "Burial forge and anvil, Artisans' Workshop",
-                    items = "Highest-tier armour you can smith, bought from the GE",
                     money = "Very expensive",
-                    notes = "Elder rune 1.26M XP/hr, primal 1.6M.",
+                    notes = "The set is destroyed. AFK with an autoheater.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_burial_armour",
                 },
                 {
-                    name = "Smelting bars (primal)",
+                    id = "smithing_corrupted_ore_high",
+                    name = "Corrupted ore",
+                    intensity = "low",
+                    xpPerHour = 400000,
+                    location = "Trahaearn district, Prifddinas",
+                    notes = "Up to 400k XP/hr with Voice of Seren, full blacksmith's outfit and Superheat Form.",
+                    wiki = "https://runescape.wiki/w/Corrupted_ore",
+                    requirements = { quests = { "Plague's End" } },
+                    items = {
+                        { label = "Corrupted ore", names = { "Corrupted ore" } },
+                    },
+                },
+                {
+                    id = "smithing_forge_elder_rune",
+                    name = "Forging elder rune items",
+                    intensity = "medium",
+                    xpPerHour = 274286,
+                    location = "Forge and anvil",
+                    money = "Profitable",
+                    notes = "Elder rune full helm +5. Averages about 250k at high heat or 150k fully AFK.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_from_bars",
+                },
+                {
+                    id = "smithing_smelt_elder_rune",
+                    name = "Smelting elder rune bars",
+                    intensity = "low",
+                    xpPerHour = 78000,
+                    location = "Any furnace",
+                    money = "Profitable",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
+                },
+            },
+        },
+        {
+            from = 100, to = 111,
+            methods = {
+                {
+                    id = "smithing_burial_primal",
+                    name = "Burial armour (primal)",
+                    intensity = "medium",
+                    xpPerHour = 1603636,
+                    location = "Burial forge and anvil, Artisans' Workshop",
+                    money = "Very expensive",
+                    notes = "Rate at full heat. The set is destroyed.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_burial_armour",
+                },
+                {
+                    id = "smithing_forge_primal",
+                    name = "Forging primal items",
+                    intensity = "medium",
+                    xpPerHour = 349091,
+                    location = "Forge and anvil",
+                    money = "Profitable",
+                    notes = "Primal full helm +5. Averages about 318k at high heat or 190k fully AFK.",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Forging_from_bars",
+                },
+                {
+                    id = "smithing_smelt_primal",
+                    name = "Smelting primal bars",
                     intensity = "low",
                     xpPerHour = 93000,
                     location = "Any furnace",
-                    money = "Unprofitable",
+                    money = "Profitable",
+                    wiki = "https://runescape.wiki/w/Pay-to-play_Smithing_training#Smelting_bars",
                 },
             },
         },
     },
 
     boosts = {
-        "Blacksmith's outfit: +6% XP for the full set",
-        "Smithing urns: +20% XP (exquisite +25%)",
-        "Brawling gloves (Smithing): +50% XP",
+        "Blacksmith's outfit: +1 to 6% XP",
+        "Smithing urns: +20% XP (exquisite +25%), urn enhancer +25%",
+        "Brawling gloves (Smithing): +50 to 75% XP",
+        "Augmented crystal hammer / Powerburst of masterstroke: up to 36% faster XP",
+        "Orthen furnace core: +5% XP for 5 minutes",
         "Perfect juju smithing potion: +5% double progress",
         "Scroll of efficiency: 2% chance per bar to keep the bar",
     },
