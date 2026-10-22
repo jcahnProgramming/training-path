@@ -29,6 +29,9 @@ local Favourites = require("src/favourites")
 local Travel = require("src/travel")
 local Compass = require("src/compass")
 local Gear = require("src/gear/index")
+local Icons = require("src/icons")
+local ItemIndex = require("src/itemindex")
+local Settings = require("src/settings")
 
 local Pages = {}
 
@@ -52,8 +55,17 @@ local CHECK_STYLE = {
     info = { mark = "[?]",  colour = GREY },
 }
 
+-- Intensity badges on method cards: short word and colour.
+local INTENSITY_BADGE = {
+    high   = { text = "HIGH", colour = RED },
+    medium = { text = "MED",  colour = AMBER },
+    low    = { text = "AFK",  colour = GREEN },
+}
+
 -- The game's gold star picture, used for the Favourites tab.
 local STAR_SPRITE = id.Sprite.RAND_SPEEDRUN_STAR_GOLD_0
+-- The game's settings cog, used for the Settings tab (PrettyUI uses it too).
+local SETTINGS_SPRITE = id.Sprite.RS3_ICON_SETTINGS_30PX_2
 
 -- Space PrettyUI leaves on each side of a page, and between buttons.
 local PAGE_PADDING = 14
@@ -75,6 +87,7 @@ local shownSignature = nil   -- signature the current page was built with
 local liveUpdate = nil       -- optional function the page wants run every tick
 local wikiShown = {}         -- url -> true when its link box is open
 local compassText = nil      -- the "Heading to ..." line under the tabs, if shown
+local expandedBands = {}     -- "Skill:page:from" -> true/false, for collapsible bands
 
 -- Activity page state (kept while the page is redrawn).
 local session = nil          -- XP tracking session (src/tracker.lua)
@@ -131,25 +144,99 @@ local function addWikiButton(url, label)
     end
 end
 
--- A star toggle for a method, with the method's button next to it.
-local function addStarAndButton(entry, buttonLabel, width)
+-- A collapsible band header: "[-] Levels 40 to 59" (open) or "[+] ..."
+-- (closed). The player's own band starts open, the rest closed.
+-- Returns the header component and whether the band is open.
+local function addBandHeader(key, title, isMine)
+    local open = expandedBands[key]
+    if open == nil then open = isMine end
+    local header = view:AddSimpleButton((open and "[-] " or "[+] ") .. title, function()
+        expandedBands[key] = not open
+        Pages.redraw()
+    end, { width = columnWidth(1) })
+    if isMine then header:SetActive(true) end   -- highlight "you are here"
+    return header, open
+end
+
+-- A method as a compact card:
+--   [star] [AFK] [ Method name button        ]
+--   about 48,000 XP/hr - Fort Forinthry
+--   [OK] Ready                 (or [  ] Missing: ...)
+local function addMethodCard(entry, carried, title)
     local method = entry.method
+    local badge = INTENSITY_BADGE[method.intensity] or { text = "?", colour = GREY }
+    local nameWidth = columnWidth(1) - 24 - 44 - COLUMN_GAP * 2
     if method.id == nil then
-        -- Shouldn't happen (every method needs an id), but don't break.
-        view:AddText({ text = buttonLabel, colour = GOLD })
+        view:AddText({ text = title or method.name, colour = GOLD })
+    else
+        view:AddSpriteButton("STAR", function(_, starred)
+            Favourites.set(method.id, starred)
+            Pages.redraw()
+        end, { toggleable = true, disabled = not Favourites.has(method.id),
+            tooltip = "Add to or remove from favourites" })
+        view:AddText({ text = badge.text, colour = badge.colour, inline = true, width = 44 })
+        view:AddSimpleButton(title or method.name, function() Pages.open("method", method.id) end,
+            { inline = true, width = nameWidth })
+    end
+
+    local details = {}
+    if method.xpPerHour then details[#details + 1] = "about " .. Skills.formatNumber(method.xpPerHour) .. " XP/hr" end
+    if method.location then details[#details + 1] = method.location end
+    if #details > 0 then view:AddText({ text = table.concat(details, " - "), colour = WHITE }) end
+    addCheckLine(methodStatusLine(method, carried))
+end
+
+-- One item line with its in-game icon when we know the item's exact name:
+--   [icon] Tool: Rune pickaxe        (icon dimmed when you don't have it)
+-- Falls back to a plain text line when there's no icon.
+local function addItemLine(item, line)
+    local obj = (item.names and item.names[1]) and ItemIndex.find(item.names[1]) or nil
+    if obj == nil then
+        addCheckLine(line)
         return
     end
-    view:AddSpriteButton("STAR", function(_, starred)
-        Favourites.set(method.id, starred)
-        Pages.redraw()
-    end, {
-        toggleable = true,
-        disabled = not Favourites.has(method.id),   -- silver when not starred
-        tooltip = "Add to or remove from favourites",
+    local style = CHECK_STYLE[line.state] or CHECK_STYLE.info
+    view:AddItemSlot(obj, {
+        disabled = line.state ~= "ok",
+        quantity = (item.count and item.count > 1) and item.count or nil,
+        tooltip = item.label,
     })
-    view:AddSimpleButton(buttonLabel, function()
-        Pages.open("method", method.id)
-    end, { inline = true, width = width })
+    view:AddText({ text = line.text, colour = style.colour, inline = true, offsetY = 8 })
+end
+
+-- The best method for a skill at the player's level, preferring the
+-- intensity chosen in Settings. Guides list methods best-first, so within
+-- the player's band we take the first one that is Ready and has the right
+-- intensity; then the first with the right intensity; then the first one.
+local function bestMethod(skillName, level, carried)
+    local guide = Guides.bySkill[skillName]
+    local band = (guide and level) and Guides.bandFor(guide, level) or nil
+    if band == nil or #band.methods == 0 then return nil end
+    local wanted = Settings.get("bestIntensity")
+    local firstOfKind = nil
+    for _, method in ipairs(band.methods) do
+        if method.intensity == wanted then
+            if #Checks.method(method, carried).missing == 0 then return method end
+            firstOfKind = firstOfKind or method
+        end
+    end
+    return firstOfKind or band.methods[1]
+end
+
+-- Hover text for a skill: its name and the best method right now.
+local function skillTooltip(skill, level, carried)
+    local best = bestMethod(skill.name, level, carried)
+    if best then return skill.name .. ": " .. best.name end
+    return skill.name
+end
+
+-- A skill's icon as a small picture button (clicking opens its guide).
+local function addSkillIcon(skillName, size, inline)
+    local spriteId = Icons.skill(skillName)
+    if spriteId == nil then return nil end
+    return view:AddSimpleButton(spriteId, function() Pages.open("guide", skillName) end, {
+        size = size, iconSize = size - 6, inline = inline, tooltip = skillName,
+    })
 end
 
 ----------------------------------------------------------------------------
@@ -182,6 +269,9 @@ local function addTabs()
     local star = view:AddSimpleButton(STAR_SPRITE, function() Pages.switchTab("favourites") end,
         { inline = true, tooltip = "Favourites" })
     if activeTab == "favourites" then star:SetActive(true) end
+    local cog = view:AddSimpleButton(SETTINGS_SPRITE, function() Pages.switchTab("settings") end,
+        { inline = true, tooltip = "Settings" })
+    if activeTab == "settings" then cog:SetActive(true) end
 end
 
 -- The Back and Home buttons and where you are, for pages opened from a tab.
@@ -217,8 +307,15 @@ local function show(keepScroll)
     end
     page.build(current.arg, keepScroll)
     shownSignature = page.signature and page.signature(current.arg) or nil
+    if shownSignature then shownSignature = shownSignature .. (ItemIndex.isReady() and "|icons" or "") end
 
-    if keepScroll and scrollY > 0 then view:SetScrollPosition(scrollY) end
+    if keepScroll and scrollY > 0 then
+        view:SetScrollPosition(scrollY)
+    else
+        -- A new page always starts at the top (the window's own scroll too).
+        view:SetScrollPosition(0)
+        if window._scroll then pcall(function() window._scroll:SetScrollPosition(0) end) end
+    end
 end
 
 ----------------------------------------------------------------------------
@@ -268,7 +365,7 @@ end
 -- A list of items (wear/carry), each checked green/red against what the
 -- player is carrying or wearing.
 local function addItemChecks(items, carried)
-    for _, item in ipairs(items or {}) do addCheckLine(Checks.item(item, carried)) end
+    for _, item in ipairs(items or {}) do addItemLine(item, Checks.item(item, carried)) end
 end
 
 ----------------------------------------------------------------------------
@@ -277,25 +374,83 @@ end
 
 PAGES.skills = {
     build = function()
+        local compact = Settings.get("skillsView") == "compact"
         view:AddTitle("Skills")
-        view:AddText({ text = "Pick a skill to see its training guide.", colour = GREY })
+        view:AddText({ text = "Click a skill for its guide and gear. Hover to see the best method "
+            .. "for your level.", colour = GREY })
 
-        local width = columnWidth(2)
+        -- Cell sizes: large icons, or small ones packed like the game's
+        -- Skills tab. Each cell = icon button + level number.
+        local iconSize = compact and 28 or 40
+        local textWidth = compact and 28 or 32
+        local gap = compact and 2 or COLUMN_GAP
+        local cellWidth = iconSize + gap + textWidth + gap
+        local columns = math.max(1, math.floor(columnWidth(1) / cellWidth))
+        local carried = Checks.carriedItems()
+
         for i, skill in ipairs(Skills.list) do
             local level = Skills.read(skill)
-            local label = skill.name .. (level and ("  " .. level) or "")
             local hasGuide = Guides.bySkill[skill.name] ~= nil
-            view:AddSimpleButton(label, function() Pages.open("guide", skill.name) end, {
-                inline = (i % 2 == 0),       -- two buttons per row
-                width = width,
-                disabled = not hasGuide,     -- greyed out until its guide exists
-            })
+            local inline = ((i - 1) % columns) ~= 0       -- start a new row every `columns`
+            local spriteId = Icons.skill(skill.name)
+            local open = function() Pages.open("guide", skill.name) end
+            local tooltip = skillTooltip(skill, level, carried)
+            if spriteId then
+                view:AddSimpleButton(spriteId, open, { size = iconSize, iconSize = iconSize - 6,
+                    inline = inline, columnGap = gap, tooltip = tooltip, disabled = not hasGuide })
+            else
+                view:AddSimpleButton(skill.name:sub(1, 3), open, { width = iconSize, inline = inline,
+                    columnGap = gap, tooltip = tooltip, disabled = not hasGuide })
+            end
+            view:AddText({ text = level and tostring(level) or "-", colour = GOLD, inline = true,
+                width = textWidth, columnGap = gap, offsetY = compact and 2 or 8 })
         end
     end,
     signature = function()
-        local parts = {}
+        local parts = { Settings.get("skillsView"), Settings.get("bestIntensity") }
         for _, skill in ipairs(Skills.list) do parts[#parts + 1] = tostring(Skills.read(skill)) end
         return table.concat(parts, ",")
+    end,
+}
+
+----------------------------------------------------------------------------
+-- Settings tab
+----------------------------------------------------------------------------
+
+-- A row of choice buttons; the chosen one is highlighted.
+local function addChoice(settingName, choices)
+    for i, choice in ipairs(choices) do
+        local button = view:AddSimpleButton(choice.label, function()
+            Settings.set(settingName, choice.value)
+            Pages.redraw()
+        end, { inline = i > 1 })
+        if Settings.get(settingName) == choice.value then button:SetActive(true) end
+    end
+end
+
+PAGES.settings = {
+    build = function()
+        view:AddTitle("Settings")
+
+        view:AddTitle("Skills screen")
+        addChoice("skillsView", {
+            { label = "Large icons", value = "grid" },
+            { label = "Compact", value = "compact" },
+        })
+        view:AddText({ text = "Compact looks like the game's Skills tab: small icons, close together.",
+            colour = GREY })
+
+        view:AddTitle("Best method means")
+        addChoice("bestIntensity", {
+            { label = "High intensity", value = "high" },
+            { label = "Medium", value = "medium" },
+            { label = "AFK", value = "low" },
+        })
+        view:AddText({ text = "Used for the hover text on the Skills screen: the best method for your "
+            .. "level of this kind.", colour = GREY })
+    end,
+    signature = function()
+        return Settings.get("skillsView") .. Settings.get("bestIntensity")
     end,
 }
 
@@ -343,12 +498,10 @@ PAGES.favourites = {
         end
 
         local carried = Checks.carriedItems()
-        local width = columnWidth(1) - 24 - COLUMN_GAP   -- leave room for the star
         for _, methodId in ipairs(ids) do
             local entry = Guides.methodById[methodId]
             if entry then
-                addStarAndButton(entry, entry.guide.skill .. ": " .. entry.method.name, width)
-                addCheckLine(methodStatusLine(entry.method, carried))
+                addMethodCard(entry, carried, entry.guide.skill .. ": " .. entry.method.name)
             end
         end
     end,
@@ -372,7 +525,8 @@ PAGES.guide = {
         local guide = Guides.bySkill[skillName]
         addBackRow("Skills > " .. skillName)
         addSkillSubTabs(skillName, "guide")
-        view:AddTitle(skillName .. " guide")
+        addSkillIcon(skillName, 40, false)
+        view:AddTitle({ text = skillName .. " guide", inline = true, offsetY = 6 })
         if guide == nil then
             view:AddText("This guide isn't available yet.")
             return
@@ -385,22 +539,24 @@ PAGES.guide = {
             view:AddText("Log in to see where you are in this guide.")
         end
 
+        view:AddText({ text = "Click a level range to open or close it. HIGH = click-intensive, "
+            .. "MED = a click now and then, AFK = idle.", colour = GREY })
+
         local carried = Checks.carriedItems()
-        local width = columnWidth(1) - 24 - COLUMN_GAP
         local myBand = level and Guides.bandFor(guide, level) or nil
         local myBandTitle = nil
 
         for _, band in ipairs(guide.bands) do
             local title = "Levels " .. band.from .. " to " .. (band.to - 1)
             if band == myBand then title = title .. "  (you are here)" end
-            local titleText = view:AddTitle(title)
-            if band == myBand then myBandTitle = titleText end
+            local header, open = addBandHeader(skillName .. ":guide:" .. band.from, title, band == myBand)
+            if band == myBand then myBandTitle = header end
 
-            for _, method in ipairs(band.methods) do
-                local entry = Guides.methodById[method.id] or { method = method, guide = guide }
-                addStarAndButton(entry, method.name, width)
-                view:AddText({ text = methodSummary(method), colour = WHITE })
-                addCheckLine(methodStatusLine(method, carried))
+            if open then
+                for _, method in ipairs(band.methods) do
+                    local entry = Guides.methodById[method.id] or { method = method, guide = guide }
+                    addMethodCard(entry, carried)
+                end
             end
         end
 
@@ -414,7 +570,6 @@ PAGES.guide = {
         view:AddText({ text = guide.source or "Data: RuneScape Wiki (CC BY-NC-SA 3.0)", colour = GREY })
 
         -- Jump to the player's band when the guide is first opened.
-        if myBandTitle and not keepScroll then view:ScrollToChild(myBandTitle) end
     end,
     signature = function(skillName)
         local guide = Guides.bySkill[skillName]
@@ -439,7 +594,8 @@ PAGES.gear = {
         local gear = Gear.bySkill[skillName]
         addBackRow("Skills > " .. skillName .. " > Gear")
         addSkillSubTabs(skillName, "gear")
-        view:AddTitle(skillName .. " gear")
+        addSkillIcon(skillName, 40, false)
+        view:AddTitle({ text = skillName .. " gear", inline = true, offsetY = 6 })
         if gear == nil then
             view:AddText("Gear for this skill isn't available yet.")
             return
@@ -456,14 +612,15 @@ PAGES.gear = {
         for _, band in ipairs(gear.bands) do
             local title = "Levels " .. band.from .. " to " .. (band.to - 1)
             if band == myBand then title = title .. "  (you are here)" end
-            local titleText = view:AddTitle(title)
-            if band == myBand then myBandTitle = titleText end
+            local header, open = addBandHeader(skillName .. ":gear:" .. band.from, title, band == myBand)
+            if band == myBand then myBandTitle = header end
 
-            for _, item in ipairs(band.items) do
-                -- "[OK] Tool: Bronze hatchet" in green when owned, red when not.
+            for _, item in ipairs(open and band.items or {}) do
+                -- "[icon] Tool: Bronze hatchet": bright and green when you
+                -- have it, dimmed and red when you don't.
                 local owned = Checks.item(item, carried)
                 owned.text = (item.slot or "Item") .. ": " .. owned.text
-                addCheckLine(owned)
+                addItemLine(item, owned)
                 for _, levelReq in ipairs(item.levels or {}) do
                     local line = Checks.level(levelReq)
                     line.text = "   Needs " .. line.text
@@ -479,7 +636,6 @@ PAGES.gear = {
         end
 
         view:AddText({ text = gear.source or "Data: RuneScape Wiki (CC BY-NC-SA 3.0)", colour = GREY })
-        if myBandTitle and not keepScroll then view:ScrollToChild(myBandTitle) end
     end,
     signature = function(skillName)
         local gear = Gear.bySkill[skillName]
@@ -508,7 +664,10 @@ PAGES.method = {
         local method, guide = entry.method, entry.guide
         addBackRow(guide.skill .. " > " .. "Levels " .. entry.band.from .. " to " .. (entry.band.to - 1))
 
-        view:AddTitle(method.name)
+        addSkillIcon(guide.skill, 40, false)
+        view:AddTitle({ text = method.name, inline = true, offsetY = 6 })
+        local badge = INTENSITY_BADGE[method.intensity]
+        if badge then view:AddText({ text = badge.text, colour = badge.colour }) end
         local starred = Favourites.has(method.id)
         view:AddSpriteButton("STAR", function(_, nowStarred)
             Favourites.set(method.id, nowStarred)
@@ -579,7 +738,7 @@ PAGES.method = {
 
         if #checks.items > 0 then
             view:AddTitle("Wear or carry")
-            for _, line in ipairs(checks.items) do addCheckLine(line) end
+            for i, line in ipairs(checks.items) do addItemLine(method.items[i], line) end
             view:AddText({ text = "Checks your backpack and worn items. The bank and tool belt "
                 .. "can't be checked.", colour = GREY })
         end
@@ -734,6 +893,7 @@ PAGES.activity = {
 -- Build the first page.
 function Pages.start(prettyWindow)
     window = prettyWindow
+    ItemIndex.start()   -- builds item icons in the background
     Pages.switchTab("skills")
 end
 
@@ -748,6 +908,8 @@ end
 function Pages.refresh()
     local page = PAGES[current.name]
     local signature = page.signature and page.signature(current.arg) or nil
+    -- Item icons appear once the item index finishes, so count that too.
+    if signature then signature = signature .. (ItemIndex.isReady() and "|icons" or "") end
     if signature ~= shownSignature then
         show(true)
         return
@@ -758,6 +920,7 @@ end
 
 -- Remove the page (on plugin shutdown).
 function Pages.stop()
+    ItemIndex.stop()
     Tracker.shutdown()
     if view then view:Destroy() end
     view = nil

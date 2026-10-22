@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.11
+
+- Every new page opens at the top (guides and gear no longer jump down to your band; it's open and highlighted instead).
+- Settings tab (the game's cog icon, next to the star) with:
+  - Skills screen: "Large icons" or "Compact" (small icons close together, like the game's Skills tab).
+  - "Best method means": High intensity, Medium or AFK.
+- Hovering a skill on the Skills screen shows the best method for your current level, of the chosen kind (the first that's Ready, else the first of that kind, else the first in your band).
+- New src/settings.lua (saved in PersistentDB).
+
+## 0.1.10
+
+- Design pass using the game's own art (no image files):
+  - Skills tab is a grid of the game's high-res skill icons with your level next to each (hover for the name).
+  - Guide, gear and method pages show the skill icon next to the title.
+  - Level bands are collapsible: your band starts open and highlighted; click "[+]"/"[-]" to open or close others.
+  - Methods are compact cards: star, intensity badge (HIGH / MED / AFK in red / amber / green), name, XP/hr and place, and a Ready / Missing line.
+  - Items (gear, wear/carry, recommended inventory) show their in-game icon in an inventory-style slot, dimmed when you don't have them.
+- New src/icons.lua (skill icon sprites) and src/itemindex.lua (item name -> icon, built in the background a few thousand ids per tick).
+
 ## 0.1.9
 
 - Each skill guide has two tabs: Training (the methods) and Gear.
