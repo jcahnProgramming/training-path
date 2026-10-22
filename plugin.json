@@ -1,6 +1,6 @@
 {
     "name": "Training Path",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "contactEmailAddress": "REPLACE_WITH_YOUR_PLUGIN_CONTACT_EMAIL",
     "requiredDependencies": {
         "prettyui": 6398181

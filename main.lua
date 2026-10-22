@@ -1,7 +1,7 @@
 --[[
-    Training Path  -  v0.1.4
+    Training Path  -  v0.1.5
     -----------------------------------
-    A movable, resizable window that shows the player's levels and XP.
+    A movable, resizable window with skill training guides.
 
     What this file does:
       1. Builds a window using PrettyUI, the shared UI library that Quest
@@ -18,8 +18,8 @@
          Without that flag, clicks fall through to the game (our v0.1.1 bug).
       4. Saves the window position and size in PersistentDB so they are
          restored the next time the plugin loads.
-      5. Lists every skill with the player's level and XP (see src/skills.lua),
-         refreshed once per game tick.
+      5. Shows the pages from src/pages.lua: a home page (guide buttons and
+         the player's levels) and a guide page per skill (src/guides/).
 
     Nothing in this plugin sends input or actions to the game. It only reads
     where the mouse is while the player holds the resize corner.
@@ -106,48 +106,15 @@ local window = prettyui.Window.new(gameLayer, {
 })
 
 ----------------------------------------------------------------------------
--- Window contents: the player's levels
+-- Window contents (see src/pages.lua)
 ----------------------------------------------------------------------------
 
-local Skills = require("src/skills")
-
--- One line at the top that tells the player what's going on.
-local statusText = window:AddText("Log in to see your levels.")
-
-window:AddTitle("Your levels")
-
--- One text line per skill. skillLines[i] belongs to Skills.list[i].
--- lastShown remembers what each line says, so we only update lines that
--- actually changed (most ticks, nothing does).
-local skillLines = {}
-local lastShown = {}
-for i, skill in ipairs(Skills.list) do
-    skillLines[i] = window:AddText(skill.name .. ": -")
-end
-
--- Read every skill and update the lines whose numbers changed.
-local function refreshLevels()
-    if not Player.IsAvailable() then
-        statusText.content = "Log in to see your levels."
-        return
-    end
-    statusText.content = "Scroll inside the window to see every skill."
-
-    for i, skill in ipairs(Skills.list) do
-        local level, xp = Skills.read(skill)
-        local line = skill.name .. ": level " .. level
-            .. "  (" .. Skills.formatNumber(xp) .. " xp)"
-        if lastShown[i] ~= line then
-            lastShown[i] = line
-            skillLines[i].content = line
-        end
-    end
-end
+local Pages = require("src/pages")
+Pages.start(window)
 
 -- Check once per game tick (every 0.6 seconds). Levels and XP only change
 -- when the server tells the client, which happens on these ticks.
-Event.ServerLogic.Subscribe("trainingPathRefreshLevels", refreshLevels)
-refreshLevels()
+Event.ServerLogic.Subscribe("trainingPathRefreshLevels", Pages.refresh)
 
 -- Small gold square drawn inside the window's bottom-right corner, so the
 -- player can see where to grab. It's only a picture; it doesn't take clicks.
@@ -283,6 +250,7 @@ local function stopResize()
     captureExpanded = false
     placeGrip()
     saveWindowIfChanged()
+    Pages.rebuild()   -- re-wrap the text to the new width
     return false
 end
 grip:Subscribe(ui.Hook.ONRELEASE, "trainingPathResizeStop", stopResize)
@@ -297,8 +265,9 @@ grip:Subscribe(ui.Hook.ONDRAGCOMPLETE, "trainingPathResizeStop", stopResize)
 -- The window goes first because it still refers to the corner layer.
 function PluginShutdown()
     Event.ServerLogic.Unsubscribe("trainingPathRefreshLevels")
+    Pages.stop()
     window:Destroy()
     grip:Destroy()
 end
 
-print("[Training Path] Loaded v0.1.4. Window " .. window.root.width .. " x " .. window.root.height)
+print("[Training Path] Loaded v0.1.5. Window " .. window.root.width .. " x " .. window.root.height)

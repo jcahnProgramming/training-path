@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5
+
+- Guide engine: data format in src/guides/ (level bands -> methods with intensity, XP/hr, location, items, requirements, money, notes; plus boosts and a source credit).
+- First guide: Smithing, from the RuneScape Wiki's Pay-to-play Smithing training page (CC BY-NC-SA 3.0).
+- Pages (src/pages.lua): home page with guide buttons and levels; guide page with "(you are here)" on the player's band, scrolled to it.
+- Page is rebuilt after a resize so text re-wraps.
+
 ## 0.1.4
 
 - Window lists every skill with the player's level and total XP (Player.GetLevelUncapped / GetXPUncapped).
